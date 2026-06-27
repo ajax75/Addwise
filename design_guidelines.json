@@ -1,0 +1,119 @@
+{
+  "theme": "Light",
+  "archetype": "4 (Swiss & High-Contrast) + Luxury Tech",
+  "colors": {
+    "primary": "#FFFFFF",
+    "secondary": "#0B0B0B",
+    "accent": "#3BA7FF",
+    "neutral": {
+      "light": "#F3F4F6",
+      "soft": "#9CA3AF",
+      "border": "#E5E7EB"
+    },
+    "background": "#FFFFFF",
+    "surface": "#F9FAFB",
+    "text_primary": "#0B0B0B",
+    "text_secondary": "#4B5563"
+  },
+  "typography": {
+    "font_family_heading": "'Geist', sans-serif",
+    "font_family_body": "'Inter', sans-serif",
+    "font_family_mono": "'JetBrains Mono', monospace",
+    "h1": "text-5xl sm:text-6xl tracking-tighter font-light leading-none",
+    "h2": "text-3xl sm:text-4xl lg:text-5xl tracking-tight font-medium leading-tight",
+    "h3": "text-2xl sm:text-3xl tracking-tight font-medium",
+    "body": "text-base sm:text-lg leading-relaxed font-light text-[#4B5563]",
+    "overline": "uppercase text-xs tracking-[0.2em] font-semibold text-[#9CA3AF]"
+  },
+  "spacing_and_layout": {
+    "container_padding": "px-6 md:px-12 lg:px-24",
+    "section_gap": "py-24 md:py-32",
+    "grid_strategy": "Tetris grid with wide gap-8 to gap-12. Asymmetrical layout for 'Industries' and 'Water Solutions' sections. Mobile-first grid-cols-1.",
+    "corners": "rounded-2xl for main cards, completely sharp (rounded-none) for editorial images to maintain luxury tension."
+  },
+  "surfaces_and_materials": {
+    "glassmorphism": "backdrop-blur-2xl bg-white/70 border border-white/40 shadow-sm (Use for Navbar and Water Solution Cards)",
+    "cards": "Flat background (bg-[#F9FAFB]), 1px solid border-[#E5E7EB], hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-out",
+    "buttons": "bg-[#0B0B0B] text-white hover:bg-[#3BA7FF] hover:text-white transition-colors duration-300 px-8 py-4 rounded-full font-medium"
+  },
+  "motion_and_interactions": {
+    "hero": "Parallax scroll on background image, slow fade-in stagger for typography.",
+    "hover": "Cards lift (-translate-y-2), thin icons turn from Black to Crystal Blue on hover.",
+    "scroll": "Smooth scrolling. Reveal animations for Testimonials and Process timeline."
+  },
+  "components": [
+    {
+      "name": "Navigation",
+      "type": "custom",
+      "instructions": "Sticky, glassmorphism background (backdrop-blur-2xl bg-white/70). Must include full-screen mobile menu overlay for premium feel."
+    },
+    {
+      "name": "Hero",
+      "type": "custom",
+      "instructions": "Huge Geist typography, editorial spacing. Soft parallax background image of abstract water texture."
+    },
+    {
+      "name": "About",
+      "type": "custom",
+      "instructions": "Clean Editorial 'About' story layout. Focus on huge typography and asymmetrical image placement."
+    },
+    {
+      "name": "Water Solutions Cards",
+      "type": "custom",
+      "instructions": "Use 'Glassmorphism' surface rules. Include thin geometric icons. Lift on hover."
+    },
+    {
+      "name": "Technology Flow",
+      "type": "custom",
+      "instructions": "Interactive multi-stage horizontal timeline representing the filtration process (animated stages)."
+    },
+    {
+      "name": "Industries Grid",
+      "type": "custom",
+      "instructions": "Premium asymmetrical bento grid displaying Villas, Apartments, Commercial."
+    },
+    {
+      "name": "Featured Products",
+      "type": "custom",
+      "instructions": "Showcase specific products using high-end imagery and minimal typography."
+    },
+    {
+      "name": "Process Timeline",
+      "type": "custom",
+      "instructions": "Animated step-by-step timeline (Analysis, Consultation, Custom Design, Installation, Support)."
+    },
+    {
+      "name": "Testimonials",
+      "type": "custom",
+      "instructions": "Large elegant quotes with smooth transitions. Use editorial serif or fine sans-serif (Geist)."
+    },
+    {
+      "name": "Contact Form",
+      "type": "shadcn",
+      "instructions": "Minimalist input fields, bottom border only (no full box), large padding. Submit button with hover effect. Save to FastAPI backend."
+    }
+  ],
+  "accessibility_and_testing": {
+    "contrast": "Ensure Crystal Blue (#3BA7FF) against White background meets 3:1 for large text, or use it primarily for accents/icons. Rich Black text on White is preferred for readability.",
+    "testing": "All interactive elements (buttons, inputs, cards, menu toggles) MUST have data-testid attributes (e.g., data-testid='hero-cta-button', data-testid='mobile-menu-toggle')."
+  },
+  "media": {
+    "hero_background": {
+      "url": "https://images.unsplash.com/photo-1528481711262-175bb7079126",
+      "description": "Abstract fluid blue water texture for hero background."
+    },
+    "water_drop_technology": {
+      "url": "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzZ8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwZHJvcCUyMGNsZWFufGVufDB8fHx8MTc4MTg3NDQ1N3ww&ixlib=rb-4.1.0&q=85",
+      "description": "Clean water glass with splash."
+    },
+    "luxury_villa_industry": {
+      "url": "https://images.pexels.com/photos/29334668/pexels-photo-29334668.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Modern luxury villa exterior for the Industries section."
+    },
+    "abstract_water": {
+      "url": "https://images.unsplash.com/photo-1476897017502-219c9169bd6f",
+      "description": "Blue ocean wave for secondary background or featured elements."
+    }
+  },
+  "instructions_to_main_agent": "Strictly follow the mobile-first approach. Ensure spacing is extremely generous (p-12 to p-24). Use Geist font for all headings. The layout must feel like a high-end luxury editorial, not a standard SaaS template. Apply data-testid to every interactive component. The app type is hybrid_fullstack, ensure backend API integrates with Contact Form."
+}
