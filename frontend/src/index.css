@@ -4,27 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: 0 0% 100%;
-  --foreground: 0 0% 4.3%;
-  --card: 0 0% 100%;
-  --card-foreground: 0 0% 4.3%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 4.3%;
-  --primary: 0 0% 4.3%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 0 0% 96.1%;
-  --secondary-foreground: 0 0% 4.3%;
-  --muted: 0 0% 96.1%;
-  --muted-foreground: 0 0% 40%;
-  --accent: 206 100% 62%;
-  --accent-foreground: 0 0% 100%;
-  --border: 0 0% 89.8%;
-  --input: 0 0% 89.8%;
-  --ring: 206 100% 62%;
-  --radius: 1rem;
-}
-
 body {
   margin: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -71,21 +50,6 @@ body {
 ::selection {
   background-color: rgba(59, 167, 255, 0.15);
   color: #0B0B0B;
-}
-
-/* Glassmorphism Classes */
-.glassmorphism {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-.glassmorphism-dark {
-  background: rgba(11, 11, 11, 0.8);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Water Flow Animation & Subtle Ripple Effects */
