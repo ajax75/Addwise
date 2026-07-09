@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Droplet, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 const navLinks = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
-  { to: "/#solutions", label: "Solutions" },
   { to: "/products", label: "Products" },
   { to: "/#areas", label: "Areas We Serve" },
   { to: "/#contact", label: "Contact" }
@@ -32,15 +31,20 @@ export default function Navbar() {
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
-          <Link
-            to="/"
-            data-testid="navbar-logo"
-            className="flex items-center gap-2 text-xl font-geist font-semibold tracking-tight text-[#0B0B0B]"
-          >
-            <div className="w-8 h-8 rounded-full bg-[#0B0B0B] flex items-center justify-center text-white">
-              <Droplet className="w-4 h-4 text-[#3BA7FF] fill-current animate-pulse-glow" />
-            </div>
-            <span>CRYSTAL <span className="font-light text-gray-500">BLUE</span></span>
+          <Link to="/" data-testid="navbar-logo" className="flex items-center gap-2.5">
+            <img
+              src="/assets/logo.png"
+              alt="Crystal Blue Water Solution"
+              className="h-10 sm:h-11 w-auto object-contain"
+            />
+            <span className="flex flex-col leading-none">
+              <span className="font-geist text-lg font-semibold tracking-tight text-[#0B0B0B]">
+                Crystal <span className="font-light text-gray-500">Blue</span>
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.22em] font-medium text-[#3BA7FF] mt-1">
+                Water Solution
+              </span>
+            </span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide">

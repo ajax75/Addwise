@@ -19,11 +19,20 @@
     "font_family_heading": "'Geist', sans-serif",
     "font_family_body": "'Inter', sans-serif",
     "font_family_mono": "'JetBrains Mono', monospace",
-    "h1": "text-5xl sm:text-6xl tracking-tighter font-light leading-none",
-    "h2": "text-3xl sm:text-4xl lg:text-5xl tracking-tight font-medium leading-tight",
-    "h3": "text-2xl sm:text-3xl tracking-tight font-medium",
-    "body": "text-base sm:text-lg leading-relaxed font-light text-[#4B5563]",
-    "overline": "uppercase text-xs tracking-[0.2em] font-semibold text-[#9CA3AF]"
+    "note": "Base font size bumped to 17px. The Tailwind fontSize scale (tailwind.config.js) is enlarged ~1 step so all text-* utilities are larger project-wide. Prefer the reusable classes below (defined in src/index.css @layer components) over ad-hoc utility stacks.",
+    "scale_px": { "xs": 13, "sm": 15, "base": 17, "lg": 19, "xl": 22, "2xl": 26, "3xl": 32, "4xl": 40, "5xl": 52, "6xl": 64, "7xl": 76, "8xl": 100 },
+    "classes": {
+      "eyebrow": ".ds-eyebrow",
+      "h1": ".ds-h1",
+      "h2": ".ds-h2",
+      "h3": ".ds-h3",
+      "lead": ".ds-lead",
+      "body": ".ds-body",
+      "small": ".ds-small",
+      "button_primary": ".btn-primary",
+      "button_secondary": ".btn-secondary"
+    },
+    "tokens": { "accent": "#3BA7FF", "ink": "#0B0B0B", "surface": "#F9FAFB", "muted": "#4B5563" }
   },
   "spacing_and_layout": {
     "container_padding": "px-6 md:px-12 lg:px-24",

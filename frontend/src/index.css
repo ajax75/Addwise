@@ -12,6 +12,44 @@ body {
   background-color: #FFFFFF;
   color: #0B0B0B;
   overflow-x: hidden;
+  /* Design-system base body size (bumped up for readability) */
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+
+/* ------------------------------------------------------------------ *
+ * Design system — reusable typography & button primitives.
+ * Prefer these over ad-hoc utility stacks so type stays consistent.
+ * The sizes resolve through the enlarged scale in tailwind.config.js.
+ * ------------------------------------------------------------------ */
+@layer components {
+  .ds-eyebrow {
+    @apply text-xs uppercase tracking-[0.2em] font-semibold text-accent;
+  }
+  .ds-h1 {
+    @apply font-geist text-5xl sm:text-7xl lg:text-8xl font-light tracking-tighter leading-[1.05] text-ink;
+  }
+  .ds-h2 {
+    @apply font-geist text-4xl sm:text-5xl font-light tracking-tight text-ink;
+  }
+  .ds-h3 {
+    @apply font-geist text-2xl sm:text-3xl font-medium tracking-tight text-ink;
+  }
+  .ds-lead {
+    @apply text-lg sm:text-xl font-light leading-relaxed text-gray-500;
+  }
+  .ds-body {
+    @apply text-base font-light leading-relaxed text-gray-600;
+  }
+  .ds-small {
+    @apply text-sm font-light text-gray-500;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-ink text-white hover:bg-accent px-8 py-4 rounded-full text-sm font-medium tracking-wide transition-luxury;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-white/80 backdrop-blur-md border border-gray-200 text-gray-800 hover:border-ink px-8 py-4 rounded-full text-sm font-medium tracking-wide transition-luxury;
+  }
 }
 
 /* Custom Scrollbar */

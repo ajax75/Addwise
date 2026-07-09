@@ -1,227 +1,168 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
-import {
-  Home as HomeIcon,
-  Building,
-  Gem,
-  ShieldCheck,
-  Sparkles,
-  Leaf,
-  HeartHandshake,
-  BadgeCheck,
-  Wrench,
-  Settings2,
-  LifeBuoy,
-  ArrowRight
-} from "lucide-react";
+import { Settings2, Cpu, LifeBuoy, ArrowRight } from "lucide-react";
 
-export default function About() {
-  const coreValues = [
-    { title: "Quality", desc: "Premium components and rigorous testing behind every system we deploy.", icon: Gem },
-    { title: "Integrity", desc: "Transparent recommendations based on your actual water profile, not upselling.", icon: ShieldCheck },
-    { title: "Innovation", desc: "Continuously refining our filtration engineering with the latest technology.", icon: Sparkles },
-    { title: "Sustainability", desc: "Low-waste, energy-conscious systems that respect the environment.", icon: Leaf },
-    { title: "Customer Commitment", desc: "Long-term relationships built on responsive, dependable service.", icon: HeartHandshake },
-    { title: "Reliability", desc: "Systems engineered to perform consistently, year after year.", icon: BadgeCheck }
-  ];
+const fadeUp = {
+  hidden: { opacity: 0, y: 32 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } }
+};
 
-  const trustHighlights = [
-    { title: "Professional Installation", icon: Wrench },
-    { title: "Customized Solutions", icon: Settings2 },
-    { title: "Premium Components", icon: ShieldCheck },
-    { title: "Reliable Support", icon: LifeBuoy }
-  ];
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.15 } }
+};
 
-  const fadeUp = {
-    hidden: { opacity: 0, y: 32 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } }
-  };
+const featureCards = [
+  {
+    title: "Customized Solutions",
+    desc: "Every system is designed according to water quality, source, and customer requirements.",
+    icon: Settings2
+  },
+  {
+    title: "Advanced Technology",
+    desc: "Modern filtration technologies including RO, UV, UF, Iron Removal, Water Softening, and Whole House Filtration.",
+    icon: Cpu
+  },
+  {
+    title: "Trusted Support",
+    desc: "Professional installation, reliable maintenance, expert guidance, and long-term customer service.",
+    icon: LifeBuoy
+  }
+];
 
-  const staggerContainer = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.12 } }
-  };
+const stats = [
+  { value: 100, suffix: "%", label: "Customized Solutions" },
+  { text: "Residential & Industrial", label: "Expertise" },
+  { text: "Premium", label: "Quality Components" },
+  { text: "Reliable", label: "After-Sales Support" }
+];
+
+/* Count-up that animates once the stat scrolls into view */
+function CountUp({ end, suffix = "", duration = 1600 }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.5 });
+  const [val, setVal] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    let raf;
+    const start = performance.now();
+    const tick = (now) => {
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setVal(Math.round(eased * end));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [inView, end, duration]);
 
   return (
-    <>
-      {/* Hero */}
-      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-32 pb-20 bg-gradient-to-b from-[#F9FAFB] to-white">
-        <motion.div
-          className="max-w-4xl mx-auto px-6 md:px-12 text-center relative z-10"
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer}
-        >
-          <motion.div variants={fadeUp} className="text-xs uppercase tracking-[0.2em] font-semibold text-blue-500 mb-4">
-            Our Story
-          </motion.div>
-          <motion.h1
-            variants={fadeUp}
-            data-testid="about-hero-heading"
-            className="font-geist text-5xl sm:text-6xl lg:text-7xl font-light tracking-tighter leading-[1.05] text-[#0B0B0B] mb-6"
-          >
-            About Crystal Blue Water Solution
-          </motion.h1>
-          <motion.p variants={fadeUp} className="max-w-2xl mx-auto text-base sm:text-xl font-light text-gray-500 leading-relaxed">
-            Engineering clean, safe, and reliable water for homes and businesses across Kannur and Kerala.
-          </motion.p>
-        </motion.div>
-      </section>
+    <span ref={ref}>
+      {val}
+      {suffix}
+    </span>
+  );
+}
 
-      {/* Company Story */}
-      <section data-testid="about-story-section" className="py-24 md:py-32 bg-white border-t border-gray-50">
+export default function About() {
+  return (
+    <>
+      {/* Main About — two-column */}
+      <section data-testid="about-intro-section" className="pt-40 pb-20 md:pb-28 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            {/* Left — water-themed image */}
             <motion.div
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:col-span-6 space-y-8"
+              className="relative order-1"
             >
-              <div className="text-xs uppercase tracking-[0.2em] font-semibold text-blue-500">The Ethos</div>
-              <h2 className="font-geist text-4xl sm:text-5xl tracking-tighter leading-none text-[#0B0B0B] font-light">
-                Why compromise on the element that is <span className="font-semibold text-blue-500 underline decoration-blue-200 underline-offset-8">70% of you?</span>
-              </h2>
-              <p className="text-base sm:text-lg text-gray-500 font-light leading-relaxed">
-                Crystal Blue Water Solution is committed to providing clean and safe water through reliable filtration technology. We look at water treatment not as plumbing, but as essential modern infrastructure — for the home and for the business.
-              </p>
-              <p className="text-base sm:text-lg text-gray-500 font-light leading-relaxed">
-                By fusing medical-grade ultrafiltration with custom-engineered ion exchange matrices and precise sediment separation, we ensure every customer drinks, bathes, and operates with water that meets the highest standard of purity.
-              </p>
-
-              <div className="pt-4 border-l-2 border-blue-500 pl-6 space-y-4">
-                <p className="italic text-gray-700 font-light text-base sm:text-lg">
-                  &ldquo;We designed Crystal Blue to feel completely invisible. No noise, no scaling, no chlorine taste—just pristine, reliable purity.&rdquo;
-                </p>
-                <div className="text-xs font-mono uppercase tracking-wider text-gray-400">
-                  — Lead Architect, Engineering division
+              <div className="absolute -inset-4 bg-gradient-to-tr from-[#3BA7FF]/15 to-transparent rounded-[2rem] blur-2xl -z-10" />
+              <img
+                src="https://images.unsplash.com/photo-1548839140-29a749e1cf4d?crop=entropy&cs=srgb&fm=jpg&w=1100&q=85"
+                alt="Clean, pure water"
+                className="w-full h-[360px] sm:h-[480px] object-cover rounded-3xl border border-gray-100 shadow-xl shadow-blue-500/5"
+              />
+              <div className="absolute bottom-5 left-5 right-5 bg-white/80 backdrop-blur-md border border-white/60 rounded-2xl p-5 shadow-lg">
+                <div className="ds-eyebrow">Purity, Engineered</div>
+                <div className="font-geist text-lg font-light text-[#0B0B0B] mt-1">
+                  Custom water treatment for homes, businesses & industries.
                 </div>
               </div>
             </motion.div>
 
+            {/* Right — content */}
             <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-              className="lg:col-span-6 relative"
+              variants={staggerContainer}
+              className="order-2 space-y-5"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-transparent rounded-3xl filter blur-2xl -z-10" />
-              <img
-                src="https://images.unsplash.com/photo-1548839140-29a749e1cf4d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzZ8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwZHJvcCUyMGNsZWFufGVufDB8fHx8MTc4MTg3NDQ1N3ww&ixlib=rb-4.1.0&q=85"
-                alt="Clean glass of water"
-                className="w-full rounded-2xl border border-gray-100 shadow-2xl object-cover h-[450px] sm:h-[550px]"
-              />
-              <div className="absolute bottom-6 left-6 right-6 bg-white/75 backdrop-blur-md border border-white/20 p-6 rounded-xl shadow-lg">
-                <div className="text-xs font-mono text-[#0B0B0B]">WATER INTELLIGENCE CORE</div>
-                <div className="text-lg font-geist font-light mt-1">Real-time particle diagnostic & automatic ion regeneration.</div>
-              </div>
+              <motion.div variants={fadeUp} className="ds-eyebrow">About Us</motion.div>
+              <motion.h1 variants={fadeUp} data-testid="about-hero-heading" className="ds-h2">
+                About Crystal Blue Water Solution
+              </motion.h1>
+              <motion.p variants={fadeUp} className="ds-lead">
+                Delivering Safe, Pure, and Reliable Water Solutions for Homes, Businesses, and Industries.
+              </motion.p>
+
+              <motion.p variants={fadeUp} className="ds-body">
+                At Crystal Blue Water Solution, we believe clean water is essential for healthy living and successful
+                businesses. We specialize in advanced water purification and treatment systems designed to provide
+                safe, high-quality water for residential, commercial, and industrial applications.
+              </motion.p>
+              <motion.p variants={fadeUp} className="ds-body">
+                Every solution is customized based on the customer's water source and usage requirements, ensuring
+                maximum efficiency, long-term reliability, and superior performance. From domestic drinking water
+                purifiers to complete whole-house filtration systems and industrial water treatment plants, we deliver
+                solutions that combine innovation, quality, and sustainability.
+              </motion.p>
+              <motion.p variants={fadeUp} className="ds-body">
+                Our experienced team is committed to providing professional consultation, expert installation,
+                dependable maintenance, and ongoing support, making us a trusted partner for all your water treatment
+                needs.
+              </motion.p>
+
+              <motion.div variants={fadeUp} className="pt-2">
+                <Link to="/#contact" data-testid="about-cta-analysis" className="btn-primary">
+                  Get Free Water Analysis
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </motion.div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Vision */}
-      <section data-testid="about-vision-section" className="py-24 md:py-32 bg-[#F9FAFB] border-t border-b border-gray-200">
+      {/* Feature cards */}
+      <section data-testid="about-features-section" className="pb-24 md:pb-28 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={fadeUp}
-            className="text-center max-w-2xl mx-auto mb-16"
-          >
-            <div className="text-xs uppercase tracking-[0.2em] font-semibold text-blue-500 mb-3">Our Vision</div>
-            <h2 className="font-geist text-4xl sm:text-5xl font-light tracking-tight text-[#0B0B0B]">
-              Built for Homes. Built for Business.
-            </h2>
-          </motion.div>
-
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={staggerContainer}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8"
           >
-            <motion.div variants={fadeUp} className="bg-white border border-gray-100 rounded-2xl p-8 space-y-4 shadow-sm">
-              <div className="w-12 h-12 rounded-full border border-gray-200 bg-[#F9FAFB] flex items-center justify-center text-[#0B0B0B]">
-                <HomeIcon className="w-6 h-6 text-[#3BA7FF]" />
-              </div>
-              <h3 className="font-geist text-xl font-medium text-[#0B0B0B]">For Homes</h3>
-              <p className="text-gray-500 text-sm font-light leading-relaxed">
-                Deliver clean, healthy, and safe water for every family.
-              </p>
-            </motion.div>
-
-            <motion.div variants={fadeUp} className="bg-white border border-gray-100 rounded-2xl p-8 space-y-4 shadow-sm">
-              <div className="w-12 h-12 rounded-full border border-gray-200 bg-[#F9FAFB] flex items-center justify-center text-[#0B0B0B]">
-                <Building className="w-6 h-6 text-[#3BA7FF]" />
-              </div>
-              <h3 className="font-geist text-xl font-medium text-[#0B0B0B]">For Businesses</h3>
-              <p className="text-gray-500 text-sm font-light leading-relaxed">
-                Provide scalable and efficient water treatment systems that support operational excellence.
-              </p>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Mission */}
-      <section data-testid="about-mission-section" className="py-24 md:py-32 bg-white">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={fadeUp}
-          className="max-w-3xl mx-auto px-6 md:px-12 text-center space-y-6"
-        >
-          <div className="text-xs uppercase tracking-[0.2em] font-semibold text-blue-500">Our Mission</div>
-          <h2 className="font-geist text-3xl sm:text-4xl font-light tracking-tight text-[#0B0B0B] leading-snug">
-            Deliver innovative, sustainable, and customized water treatment solutions while maintaining the highest standards of quality and customer satisfaction.
-          </h2>
-        </motion.div>
-      </section>
-
-      {/* Core Values */}
-      <section data-testid="about-values-section" className="py-24 md:py-32 bg-[#F9FAFB] border-t border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={fadeUp}
-            className="text-center max-w-2xl mx-auto mb-16"
-          >
-            <div className="text-xs uppercase tracking-[0.2em] font-semibold text-blue-500 mb-3">What We Stand For</div>
-            <h2 className="font-geist text-4xl sm:text-5xl font-light tracking-tight text-[#0B0B0B]">
-              Core Values
-            </h2>
-          </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            variants={staggerContainer}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {coreValues.map((value, idx) => {
-              const IconComp = value.icon;
+            {featureCards.map((card, idx) => {
+              const IconComp = card.icon;
               return (
                 <motion.div
-                  key={idx}
+                  key={card.title}
                   variants={fadeUp}
-                  data-testid={`core-value-${idx}`}
-                  className="bg-white border border-[#E5E7EB] hover:border-gray-300 rounded-2xl p-8 space-y-4 transition-luxury hover:-translate-y-2 hover:shadow-xl group"
+                  data-testid={`about-feature-${idx}`}
+                  className="bg-white border border-[#E5E7EB] rounded-2xl p-8 space-y-4 shadow-sm transition-luxury hover:-translate-y-2 hover:shadow-xl hover:border-blue-100 group"
                 >
-                  <div className="w-12 h-12 rounded-full border border-gray-200 bg-[#F9FAFB] flex items-center justify-center text-[#0B0B0B] group-hover:text-[#3BA7FF] group-hover:border-blue-100 group-hover:bg-blue-50 transition-all duration-300">
-                    <IconComp className="w-6 h-6" />
+                  <div className="w-14 h-14 rounded-2xl border border-gray-200 bg-[#F9FAFB] flex items-center justify-center text-[#0B0B0B] group-hover:text-[#3BA7FF] group-hover:border-blue-100 group-hover:bg-blue-50 transition-all duration-300">
+                    <IconComp className="w-7 h-7" />
                   </div>
-                  <h3 className="font-geist text-xl font-medium tracking-tight text-[#0B0B0B]">{value.title}</h3>
-                  <p className="text-gray-500 text-sm font-light leading-relaxed">{value.desc}</p>
+                  <h3 className="ds-h3 text-2xl">{card.title}</h3>
+                  <p className="ds-body">{card.desc}</p>
                 </motion.div>
               );
             })}
@@ -229,57 +170,24 @@ export default function About() {
         </div>
       </section>
 
-      {/* Why Customers Trust Us */}
-      <section data-testid="about-trust-section" className="py-24 md:py-32 bg-white">
+      {/* Statistics */}
+      <section data-testid="about-stats-section" className="py-20 md:py-28 bg-[#F9FAFB] border-t border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
-            variants={fadeUp}
-            className="text-center max-w-2xl mx-auto mb-16"
-          >
-            <div className="text-xs uppercase tracking-[0.2em] font-semibold text-blue-500 mb-3">Track Record</div>
-            <h2 className="font-geist text-4xl sm:text-5xl font-light tracking-tight text-[#0B0B0B]">
-              Why Customers Trust Us
-            </h2>
-          </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.15 }}
             variants={staggerContainer}
-            className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
+            className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6 text-center"
           >
-            {trustHighlights.map((item, idx) => {
-              const IconComp = item.icon;
-              return (
-                <motion.div key={idx} variants={fadeUp} data-testid={`trust-highlight-${idx}`} className="bg-[#F9FAFB] border border-gray-100 rounded-2xl p-6 text-center space-y-3">
-                  <div className="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center mx-auto text-[#0B0B0B]">
-                    <IconComp className="w-5 h-5 text-[#3BA7FF]" />
-                  </div>
-                  <h4 className="font-geist text-sm sm:text-base font-medium text-[#0B0B0B]">{item.title}</h4>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={fadeUp}
-            className="flex justify-center"
-          >
-            <Link
-              to="/#contact"
-              data-testid="about-cta-analysis"
-              className="inline-flex items-center gap-2 bg-[#0B0B0B] text-white hover:bg-[#3BA7FF] px-8 py-4 rounded-full text-sm font-medium tracking-wide transition-luxury"
-            >
-              Get Free Water Analysis
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            {stats.map((stat, idx) => (
+              <motion.div key={idx} variants={fadeUp} data-testid={`about-stat-${idx}`} className="space-y-2">
+                <div className="font-geist text-3xl sm:text-4xl font-light text-[#0B0B0B]">
+                  {stat.value != null ? <CountUp end={stat.value} suffix={stat.suffix} /> : stat.text}
+                </div>
+                <div className="text-xs sm:text-sm uppercase tracking-wider text-gray-500">{stat.label}</div>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
