@@ -107,7 +107,7 @@ export default function App() {
   }, []);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <AnimatePresence>{loading && <Loader />}</AnimatePresence>
       <div id="top" className="bg-white text-[#0B0B0B] font-inter antialiased min-h-screen relative selection:bg-blue-100 selection:text-black">
         <Navbar />

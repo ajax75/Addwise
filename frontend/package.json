@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://ajax75.github.io/Addwise",
   "dependencies": {
     "@react-three/fiber": "^9.6.1",
     "framer-motion": "11.18.0",
