@@ -33,7 +33,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
           <Link to="/" data-testid="navbar-logo" className="flex items-center gap-2.5">
             <img
-              src="/assets/logo.png"
+              src={`${process.env.PUBLIC_URL}/assets/logo.png`}
               alt="Crystal Blue Water Solution"
               className="h-10 sm:h-11 w-auto object-contain"
             />

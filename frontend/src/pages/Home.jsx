@@ -300,7 +300,7 @@ export default function Home() {
       <section className="relative min-h-[95vh] flex items-center justify-center overflow-hidden pt-24 pb-16 bg-gradient-to-b from-[#F9FAFB] to-white">
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
           <img
-            src="/assets/Hero-Crystal.png"
+            src={`${process.env.PUBLIC_URL}/assets/Hero-Crystal.png`}
             alt="Crystal Blue water purification"
             className="w-full h-full object-cover"
           />

@@ -23,7 +23,7 @@ function Loader() {
         {/* Soft glow behind the logo */}
         <div className="absolute w-32 h-32 rounded-full bg-[#3BA7FF]/20 blur-3xl" />
         <motion.img
-          src="/assets/logo.png"
+          src={`${process.env.PUBLIC_URL}/assets/logo.png`}
           alt="Crystal Blue Water Solution"
           className="relative w-20 sm:w-24 h-auto object-contain"
           animate={{ scale: [1, 1.06, 1], opacity: [0.85, 1, 0.85] }}

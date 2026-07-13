@@ -13,7 +13,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2.5">
-              <img src="/assets/logo.png" alt="Crystal Blue Water Solution" className="h-9 w-auto object-contain" />
+              <img src={`${process.env.PUBLIC_URL}/assets/logo.png`} alt="Crystal Blue Water Solution" className="h-9 w-auto object-contain" />
               <span className="flex flex-col leading-none">
                 <span className="font-geist text-base font-semibold tracking-tight text-[#0B0B0B]">
                   Crystal <span className="font-light text-gray-500">Blue</span>
