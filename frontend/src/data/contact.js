@@ -5,9 +5,9 @@ export const CONTACT = {
     { display: "+91 98765 43210", href: "+919876543210" },
     { display: "+91 91234 56789", href: "+919123456789" }
   ],
-  email: "hello@crystalbluewater.com",
+  email: "crystalblue8464@gmail.com",
   // WhatsApp number in international format, no "+" or spaces.
-  whatsappNumber: "919876543210",
+  whatsappNumber: "917356868464",
   whatsappMessage: "Hi Crystal Blue, I'd like a free water analysis for my property.",
   social: {
     // Instagram handle from the profile: @crystal_blue_water_solution
