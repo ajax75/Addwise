@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ArrowRight, Check, AlertTriangle, Droplet, Layers, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, Check, Droplet, Layers, ChevronLeft, ChevronRight } from "lucide-react";
 import { systemTypes } from "../data/products";
 
 const fadeUp = {
@@ -33,7 +33,7 @@ function SystemDetailView({ sys, onBack }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
         {/* Image gallery */}
         <div className="lg:sticky lg:top-28 self-start space-y-3">
-          <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
+          <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
             <AnimatePresence mode="wait">
               <motion.img
                 key={index}
@@ -43,7 +43,7 @@ function SystemDetailView({ sys, onBack }) {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-contain"
               />
             </AnimatePresence>
             {gallery.length > 1 && (
@@ -138,36 +138,19 @@ function SystemDetailView({ sys, onBack }) {
             </div>
           )}
 
-          {(sys.advantages || sys.benefits || sys.limitations) && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {(sys.advantages || sys.benefits) && (
-                <div>
-                  <div className="text-xs uppercase font-mono tracking-wider text-gray-400 mb-3">
-                    {sys.advantages ? "Advantages" : "Benefits"}
-                  </div>
-                  <ul className="space-y-2">
-                    {(sys.advantages || sys.benefits).map((item) => (
-                      <li key={item} className="flex items-start gap-2 text-sm text-gray-600 font-light">
-                        <Check className="w-4 h-4 text-[#3BA7FF] shrink-0 mt-0.5" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {sys.limitations && (
-                <div>
-                  <div className="text-xs uppercase font-mono tracking-wider text-gray-400 mb-3">Limitations</div>
-                  <ul className="space-y-2">
-                    {sys.limitations.map((item) => (
-                      <li key={item} className="flex items-start gap-2 text-sm text-gray-600 font-light">
-                        <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+          {(sys.advantages || sys.benefits) && (
+            <div>
+              <div className="text-xs uppercase font-mono tracking-wider text-gray-400 mb-3">
+                {sys.advantages ? "Advantages" : "Benefits"}
+              </div>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+                {(sys.advantages || sys.benefits).map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm text-gray-600 font-light">
+                    <Check className="w-4 h-4 text-[#3BA7FF] shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 

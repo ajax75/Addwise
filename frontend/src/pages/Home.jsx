@@ -28,16 +28,25 @@ import {
   ChevronRight
 } from "lucide-react";
 import { systemTypes as products } from "../data/products";
+import { CONTACT } from "../data/contact";
 
-// Company contact details — update these with the real values.
-const CONTACT = {
-  phoneDisplay: "+91 98765 43210",
-  phoneHref: "+919876543210",
-  email: "hello@crystalbluewater.com",
-  // WhatsApp number in international format, no "+" or spaces.
-  whatsappNumber: "919876543210",
-  whatsappMessage: "Hi Crystal Blue, I'd like a free water analysis for my property.",
-};
+/* Sector photos are auto-discovered from src/assets/sectors/<id>/.
+   Drop any image into a sector's folder and it's used as that card's photo. */
+const sectorCtx = require.context("../assets/sectors", true, /\.(png|jpe?g|webp|avif|gif)$/i);
+const sectorImages = {};
+sectorCtx.keys().forEach((key) => {
+  const m = key.match(/^\.\/([^/]+)\//);
+  if (!m) return;
+  (sectorImages[m[1]] = sectorImages[m[1]] || []).push(key);
+});
+Object.keys(sectorImages).forEach((folder) => {
+  sectorImages[folder] = sectorImages[folder]
+    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+    .map((key) => sectorCtx(key));
+});
+const SECTOR_PLACEHOLDER =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Crect width='100%25' height='100%25' fill='%23EEF2F6'/%3E%3C/svg%3E";
+const sectorImage = (id) => (sectorImages[id] && sectorImages[id][0]) || SECTOR_PLACEHOLDER;
 
 // WhatsApp brand glyph (lucide has no dedicated WhatsApp icon).
 function WhatsAppIcon({ className }) {
@@ -52,8 +61,9 @@ export default function Home() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Product showcase carousel (one slide at a time)
-  const [activeProduct, setActiveProduct] = useState(0);
+  // Product showcase carousel (two products per view)
+  const PER_PAGE = 2;
+  const [activePage, setActivePage] = useState(0);
   const [slideDirection, setSlideDirection] = useState(1);
 
   // Contact form (frontend-only)
@@ -114,34 +124,35 @@ export default function Home() {
     navigate(`/products${systemId ? `#${systemId}` : ""}`);
   };
 
+  const pageCount = Math.max(1, Math.ceil(products.length / PER_PAGE));
+
   const paginateProduct = (direction) => {
     setSlideDirection(direction);
-    setActiveProduct((prev) => (prev + direction + products.length) % products.length);
+    setActivePage((prev) => (prev + direction + pageCount) % pageCount);
   };
 
-  const goToProductSlide = (index) => {
-    setSlideDirection(index > activeProduct ? 1 : -1);
-    setActiveProduct(index);
+  const goToProductPage = (index) => {
+    setSlideDirection(index > activePage ? 1 : -1);
+    setActivePage(index);
   };
 
-  // Auto-advance the product carousel; timer resets whenever the active slide changes
+  // Auto-advance the product carousel; timer resets whenever the active page changes
   useEffect(() => {
     const timer = setInterval(() => {
       setSlideDirection(1);
-      setActiveProduct((prev) => (prev + 1) % products.length);
-    }, 5000);
+      setActivePage((prev) => (prev + 1) % pageCount);
+    }, 6000);
     return () => clearInterval(timer);
-  }, [activeProduct]);
+  }, [activePage, pageCount]);
 
   const slideVariants = {
-    enter: (dir) => ({ x: dir > 0 ? "100%" : "-100%", opacity: 0 }),
+    enter: (dir) => ({ x: dir > 0 ? 40 : -40, opacity: 0 }),
     center: { x: 0, opacity: 1 },
-    exit: (dir) => ({ x: dir > 0 ? "-100%" : "100%", opacity: 0 })
+    exit: (dir) => ({ x: dir > 0 ? -40 : 40, opacity: 0 })
   };
 
-  // Active carousel slide, resilient to data-shape changes (title/name, summary/desc, bestFor/specs)
-  const activeSlide = products[activeProduct] || products[0] || {};
-  const activeChips = (activeSlide.bestFor || activeSlide.specs || []).slice(0, 2);
+  // The two products shown on the current page (resilient to title/name, summary/desc, bestFor/specs)
+  const pageItems = products.slice(activePage * PER_PAGE, activePage * PER_PAGE + PER_PAGE);
 
   // Trust indicators shown under the hero CTAs
   const trustIndicators = [
@@ -159,7 +170,7 @@ export default function Home() {
       title: "Domestic Water Purifiers",
       desc: "Compact RO, UV, and UF purifiers engineered for kitchens and everyday drinking water in modern homes.",
       icon: Droplet,
-      image: "https://images.unsplash.com/photo-1659346435902-9bd10146b5d9?auto=compress&cs=tinysrgb&w=800",
+      image: sectorImage("domestic"),
       action: () => goToProducts("ro-uv-uf")
     },
     {
@@ -167,7 +178,7 @@ export default function Home() {
       title: "Whole House Water Filtration",
       desc: "Point-of-entry systems that deliver chemical, sediment, and micro-plastic-free water to every outlet in the property.",
       icon: Shield,
-      image: "https://images.unsplash.com/photo-1614966700929-84a11654eb8c?auto=compress&cs=tinysrgb&w=800",
+      image: sectorImage("whole-house"),
       action: () => goToProducts("whole-house")
     },
     {
@@ -175,7 +186,7 @@ export default function Home() {
       title: "Commercial Water Treatment",
       desc: "High-capacity systems tailored for hotels, hospitals, offices, and other commercial complexes.",
       icon: Building,
-      image: "https://images.unsplash.com/photo-1748256086767-8974ee677f77?auto=compress&cs=tinysrgb&w=800",
+      image: sectorImage("commercial"),
       action: () => goToProducts("advanced-combination")
     },
     {
@@ -183,7 +194,7 @@ export default function Home() {
       title: "Industrial Water Treatment Plants",
       desc: "Modular RO, softening, and recycling plants built for manufacturing and processing facilities at scale.",
       icon: Factory,
-      image: "https://images.unsplash.com/photo-1518623489648-a173ef7824f3?auto=compress&cs=tinysrgb&w=800",
+      image: sectorImage("industrial"),
       action: () => {
         const el = document.getElementById("industrial");
         if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -194,7 +205,7 @@ export default function Home() {
       title: "Borewell Water Treatment",
       desc: "Engineered specifically for iron, odor, turbidity, and heavy contamination common in groundwater sources.",
       icon: Cpu,
-      image: "https://images.unsplash.com/photo-1748347568194-c8cd8edd27da?auto=compress&cs=tinysrgb&w=800",
+      image: sectorImage("borewell"),
       action: () => goToProducts("iron-removal")
     }
   ];
@@ -241,10 +252,10 @@ export default function Home() {
 
   // Process Steps
   const processSteps = [
-    { step: "01", title: "Water Chemistry Analysis", desc: "We pull a live sample and run a full lab analysis covering TDS, hardness, heavy metals, pH, and bacterial colonies." },
-    { step: "02", title: "Bespoke System Modeling", desc: "Our water engineers architect a customized multi-stage filtration matrix matching your property footprint and exact water profile." },
-    { step: "03", title: "Precision Commissioning", desc: "White-glove certified technicians install your custom filtration machinery, integrating seamlessly with your premium plumbing." },
-    { step: "04", title: "Automated Maintenance & Support", desc: "Embedded IoT sensors monitor flow rates, cartridge life, and water quality 24/7, prompting proactive filter replacements." }
+    { step: "01", title: "Water Quality Analysis", desc: "We begin by analyzing your water source and testing key parameters such as TDS, hardness, iron, odor, turbidity, and other impurities to determine the most suitable treatment solution." },
+    { step: "02", title: "Customized Solution Design", desc: "Based on the water analysis and your daily water usage, we design and recommend a customized filtration or purification system that best meets your residential, commercial, or industrial requirements." },
+    { step: "03", title: "Professional Installation", desc: "Our experienced technicians professionally install and commission your system, ensuring optimal performance while providing complete guidance on operation and maintenance." },
+    { step: "04", title: "Maintenance & Support", desc: "We offer regular servicing, filter replacement, repairs, and technical support to keep your water treatment system performing efficiently and reliably for years." }
   ];
 
   // Testimonials
@@ -331,13 +342,13 @@ export default function Home() {
               Get Free Water Analysis
               <ArrowRight className="w-4 h-4" />
             </a>
-            <a
-              href="#solutions"
+            <Link
+              to="/products"
               data-testid="hero-cta-solutions"
               className="btn-secondary w-full sm:w-auto active:scale-[0.98]"
             >
-              Explore Solutions
-            </a>
+              Explore Products
+            </Link>
           </motion.div>
 
           <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-2.5 mt-12 text-xs uppercase tracking-wider text-gray-600">
@@ -444,110 +455,101 @@ export default function Home() {
             </Link>
           </motion.div>
 
-          {/* Sliding product showcase — one product at a time, small details + link to full catalog */}
+          {/* Two products per view — card layout fits square product photos better */}
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.15 }}
             variants={fadeUp}
-            className="relative h-[440px] sm:h-[520px] rounded-3xl overflow-hidden bg-[#0B0B0B] shadow-xl"
+            className="relative"
             data-testid="product-carousel"
           >
-            <AnimatePresence initial={false} custom={slideDirection}>
-              <motion.div
-                key={activeSlide.id || activeProduct}
-                custom={slideDirection}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ x: { type: "spring", stiffness: 300, damping: 32 }, opacity: { duration: 0.35 } }}
-                className="absolute inset-0"
-                data-testid={`product-slide-${activeSlide.id || activeProduct}`}
-              >
-                <img
-                  src={activeSlide.image}
-                  alt={activeSlide.title || activeSlide.name || ""}
-                  className="w-full h-full object-cover"
-                />
-                {/* Readability gradients */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-
-                <div className="absolute inset-0 flex flex-col justify-end p-8 sm:p-14">
-                  <div className="max-w-lg space-y-4">
-                    <div className="flex items-center gap-3">
-                      {activeSlide.badge && (
-                        <span className="text-[10px] font-mono uppercase tracking-widest text-white bg-white/15 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
-                          {activeSlide.badge}
-                        </span>
-                      )}
-                      {activeSlide.category && (
-                        <span className="text-xs font-mono uppercase text-[#3BA7FF] tracking-wider">
-                          {activeSlide.category}
-                        </span>
-                      )}
-                    </div>
-                    <h3 className="font-geist text-3xl sm:text-4xl font-light tracking-tight text-white">
-                      {activeSlide.title || activeSlide.name}
-                    </h3>
-                    <p className="text-white/70 text-sm font-light leading-relaxed line-clamp-2">
-                      {activeSlide.summary || activeSlide.desc}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {activeChips.map((item) => (
-                        <span
-                          key={item}
-                          className="text-[11px] text-white/80 bg-white/10 border border-white/15 px-3 py-1 rounded-full"
-                        >
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                    <Link
-                      to={`/products#${activeSlide.id || ""}`}
-                      data-testid={`product-view-${activeSlide.id || activeProduct}`}
-                      className="inline-flex items-center gap-2 bg-white text-[#0B0B0B] hover:bg-[#3BA7FF] hover:text-white px-6 py-3 rounded-full text-xs font-semibold tracking-wide transition-luxury mt-2"
+            <div className="overflow-hidden">
+              <AnimatePresence initial={false} custom={slideDirection} mode="wait">
+                <motion.div
+                  key={activePage}
+                  custom={slideDirection}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                >
+                  {pageItems.map((prod) => (
+                    <div
+                      key={prod.id}
+                      data-testid={`product-slide-${prod.id}`}
+                      className="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden flex flex-col transition-luxury hover:-translate-y-1 hover:shadow-xl group"
                     >
-                      View Details
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+                      <div className="relative aspect-[4/3] bg-gray-50 overflow-hidden">
+                        <img
+                          src={prod.image}
+                          alt={prod.title || prod.name || ""}
+                          className="absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
+                        />
+                        {prod.badge && (
+                          <span className="absolute top-4 left-4 text-[10px] font-mono uppercase tracking-widest text-white bg-[#0B0B0B]/70 backdrop-blur-md px-3 py-1 rounded-full">
+                            {prod.badge}
+                          </span>
+                        )}
+                      </div>
+                      <div className="p-6 sm:p-7 flex flex-col flex-1">
+                        {prod.category && (
+                          <div className="text-xs font-mono uppercase text-[#3BA7FF] tracking-wider mb-2">{prod.category}</div>
+                        )}
+                        <h3 className="font-geist text-xl sm:text-2xl font-medium tracking-tight text-[#0B0B0B] mb-2">
+                          {prod.title || prod.name}
+                        </h3>
+                        <p className="text-gray-500 text-sm font-light leading-relaxed mb-5 flex-1 line-clamp-3">
+                          {prod.summary || prod.desc}
+                        </p>
+                        <Link
+                          to={`/products#${prod.id || ""}`}
+                          data-testid={`product-view-${prod.id}`}
+                          className="mt-auto self-start inline-flex items-center gap-2 bg-[#0B0B0B] text-white hover:bg-[#3BA7FF] px-6 py-3 rounded-full text-xs font-semibold tracking-wide transition-luxury"
+                        >
+                          View Details
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
+            </div>
 
-            {/* Prev / Next controls */}
-            <button
-              onClick={() => paginateProduct(-1)}
-              aria-label="Previous product"
-              data-testid="carousel-prev"
-              className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white hover:bg-white hover:text-[#0B0B0B] transition-luxury z-10"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => paginateProduct(1)}
-              aria-label="Next product"
-              data-testid="carousel-next"
-              className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white hover:bg-white hover:text-[#0B0B0B] transition-luxury z-10"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-
-            {/* Slide indicators */}
-            <div className="absolute bottom-6 right-8 sm:right-14 flex items-center gap-2 z-10">
-              {products.map((prod, idx) => (
-                <button
-                  key={prod.id}
-                  onClick={() => goToProductSlide(idx)}
-                  aria-label={`Go to ${prod.title || prod.name || `slide ${idx + 1}`}`}
-                  data-testid={`carousel-dot-${idx}`}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    idx === activeProduct ? "w-8 bg-[#3BA7FF]" : "w-2.5 bg-white/40 hover:bg-white/70"
-                  }`}
-                />
-              ))}
+            {/* Controls */}
+            <div className="flex items-center justify-center gap-4 mt-8">
+              <button
+                onClick={() => paginateProduct(-1)}
+                aria-label="Previous products"
+                data-testid="carousel-prev"
+                className="w-11 h-11 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-600 hover:border-[#0B0B0B] hover:text-[#0B0B0B] transition-luxury"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <div className="flex items-center gap-2">
+                {Array.from({ length: pageCount }).map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => goToProductPage(idx)}
+                    aria-label={`Go to page ${idx + 1}`}
+                    data-testid={`carousel-dot-${idx}`}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      idx === activePage ? "w-8 bg-[#3BA7FF]" : "w-2.5 bg-gray-300 hover:bg-gray-400"
+                    }`}
+                  />
+                ))}
+              </div>
+              <button
+                onClick={() => paginateProduct(1)}
+                aria-label="Next products"
+                data-testid="carousel-next"
+                className="w-11 h-11 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-600 hover:border-[#0B0B0B] hover:text-[#0B0B0B] transition-luxury"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
             </div>
           </motion.div>
 
@@ -676,12 +678,12 @@ export default function Home() {
             variants={fadeUp}
             className="text-center max-w-2xl mx-auto mb-16"
           >
-            <div className="text-xs uppercase tracking-[0.2em] font-semibold text-blue-500 mb-3">Our Protocol</div>
+            <div className="text-xs uppercase tracking-[0.2em] font-semibold text-blue-500 mb-3">How We Work</div>
             <h2 className="font-geist text-4xl sm:text-5xl font-light tracking-tight text-[#0B0B0B]">
-              The Deployment Loop
+              Our Process
             </h2>
             <p className="text-gray-500 font-light mt-3">
-              We maintain absolute precision at every single gateway. Our professional flow guarantees custom molecular water profiles with zero friction.
+              From water analysis to long-term maintenance, we provide customized water treatment solutions that deliver clean, safe, and reliable water for homes, businesses, and industries.
             </p>
           </motion.div>
 
@@ -700,7 +702,7 @@ export default function Home() {
                 className="bg-white border border-gray-100 rounded-2xl p-6 space-y-4 relative shadow-sm"
               >
                 <div className="text-4xl font-geist font-semibold text-blue-100">{step.step}</div>
-                <h3 className="font-geist text-lg font-medium text-[#0B0B0B]">{step.title}</h3>
+                <h3 className="font-geist text-lg font-semibold text-[#0B0B0B]">{step.title}</h3>
                 <p className="text-xs text-gray-500 leading-relaxed font-light">{step.desc}</p>
               </motion.div>
             ))}
@@ -833,19 +835,29 @@ export default function Home() {
             variants={fadeUp}
             className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
           >
-            <a
-              href={`tel:${CONTACT.phoneHref}`}
-              data-testid="contact-phone-link"
-              className="group flex items-center gap-4 bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:border-[#3BA7FF] hover:shadow-md transition-luxury"
+            <div
+              data-testid="contact-phone-card"
+              className="flex items-center gap-4 bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:border-[#3BA7FF] hover:shadow-md transition-luxury"
             >
-              <div className="w-11 h-11 flex-shrink-0 rounded-full bg-blue-50 text-[#3BA7FF] flex items-center justify-center border border-blue-100 group-hover:bg-[#3BA7FF] group-hover:text-white transition-colors">
+              <div className="w-11 h-11 flex-shrink-0 rounded-full bg-blue-50 text-[#3BA7FF] flex items-center justify-center border border-blue-100">
                 <Phone className="w-5 h-5" />
               </div>
               <div className="min-w-0">
                 <div className="text-[10px] uppercase font-mono tracking-wider text-gray-400">Call Us</div>
-                <div className="text-sm font-medium text-[#0B0B0B] truncate">{CONTACT.phoneDisplay}</div>
+                <div className="flex flex-col leading-tight">
+                  {CONTACT.phones.map((p, i) => (
+                    <a
+                      key={p.href}
+                      href={`tel:${p.href}`}
+                      data-testid={`contact-phone-link-${i}`}
+                      className="text-sm font-medium text-[#0B0B0B] hover:text-[#3BA7FF] transition-colors truncate"
+                    >
+                      {p.display}
+                    </a>
+                  ))}
+                </div>
               </div>
-            </a>
+            </div>
 
             <a
               href={`mailto:${CONTACT.email}`}
