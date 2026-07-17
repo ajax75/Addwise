@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Lenis from "lenis";
 import Navbar from "./components/Navbar";
@@ -55,6 +55,35 @@ function Loader() {
   );
 }
 
+/* On every navigation, start the new page at the top — unless the URL carries a
+   hash (e.g. /#contact), in which case scroll that section into view instead. */
+function ScrollToTop() {
+  const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    if (hash) {
+      // The target section may not be mounted yet (e.g. jumping to /#contact from
+      // another route), so retry across a few frames before giving up.
+      const id = hash.replace("#", "");
+      let tries = 0;
+      let raf;
+      const tryScroll = () => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: "auto", block: "start" });
+        } else if (tries++ < 10) {
+          raf = requestAnimationFrame(tryScroll);
+        }
+      };
+      raf = requestAnimationFrame(tryScroll);
+      return () => cancelAnimationFrame(raf);
+    }
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [pathname, hash]);
+
+  return null;
+}
+
 export default function App() {
   const [loading, setLoading] = useState(true);
 
@@ -108,6 +137,7 @@ export default function App() {
 
   return (
     <BrowserRouter basename={process.env.PUBLIC_URL}>
+      <ScrollToTop />
       <AnimatePresence>{loading && <Loader />}</AnimatePresence>
       <div id="top" className="bg-white text-[#0B0B0B] font-inter antialiased min-h-screen relative selection:bg-blue-100 selection:text-black">
         <Navbar />

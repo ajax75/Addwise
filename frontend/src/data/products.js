@@ -1,7 +1,10 @@
 /* Single source of truth for the product/system list — shared by the
-   Home carousel and the Products page so they always match.
+   Home product grid and the Products page so they always match.
 
-   PRODUCT PHOTOS ARE AUTO-DISCOVERED.
+   The catalog is organised into SECTIONS. Each section is a tile on the
+   Products page and opens a detail view that lists every product it contains.
+
+   SECTION PHOTOS ARE AUTO-DISCOVERED.
    Drop any number of images (any filename, jpg/png/webp) into:
        frontend/src/assets/products/<id>/
    Every image in the folder is included automatically, sorted by filename —
@@ -33,104 +36,150 @@ const coverFor = (id) => galleryFor(id)[0];
 
 export const systemTypes = [
   {
-    id: "uv-uf",
-    title: "UV + UF Water Purifier",
-    badge: "Chemical-Free",
+    id: "domestic-purifiers",
+    title: "Domestic Water Purifiers",
+    badge: "For Homes",
     category: "Drinking Water",
-    summary: "Chemical-free purification for low-TDS municipal water — keeps natural minerals.",
+    summary: "Safe, healthy and great-tasting drinking water for homes.",
     intro:
-      "A chemical-free purifier ideal for treated municipal water. It combines ultrafiltration and UV sterilisation to remove particles and neutralise microbes while preserving the water's natural minerals.",
-    image: coverFor("uv-uf"),
-    gallery: galleryFor("uv-uf"),
-    bestFor: ["Municipal (corporation) water", "Low TDS water", "Homes mainly concerned about bacteria & viruses"],
-    howItWorks: [
-      { name: "UF (Ultrafiltration)", text: "Removes suspended particles, dirt, cysts, and bacteria through a fine membrane." },
-      { name: "UV (Ultraviolet)", text: "Uses UV light to deactivate bacteria and viruses without adding chemicals." }
-    ],
-    advantages: ["Retains natural minerals", "Produces zero wastewater", "Chemical-free purification", "Lower maintenance than RO systems"],
-    limitations: ["Cannot remove dissolved salts or heavy metals", "Only suitable when source water already has low TDS and minimal chemical contamination"]
+      "Designed to provide safe, healthy and great-tasting drinking water for homes. Choose the purification level that matches your water source — from low-TDS municipal supply to high-TDS borewell and tanker water.",
+    image: coverFor("domestic-purifiers"),
+    gallery: galleryFor("domestic-purifiers"),
+    products: [
+      {
+        name: "UV + UF Water Purifier",
+        tagline: "Ideal for municipal water with low TDS.",
+        description:
+          "Removes bacteria, viruses and suspended particles while retaining the water's natural minerals."
+      },
+      {
+        name: "RO + UV + UF Water Purifier",
+        tagline: "Suitable for borewell, tanker and high-TDS water.",
+        description:
+          "Removes dissolved salts, heavy metals, chemicals, bacteria and viruses for consistently safe drinking water."
+      },
+      {
+        name: "RO + UV + UF + Alkaline Water Purifier",
+        tagline: "Advanced purification with mineral restoration and pH balancing.",
+        description:
+          "Provides clean, healthy and mineral-rich drinking water with balanced pH for everyday wellness."
+      }
+    ]
   },
   {
-    id: "ro-uv-uf",
-    title: "RO + UV + UF Water Purifier",
-    badge: "Most Popular",
-    category: "Drinking Water",
-    summary: "All-round purification for borewell, tanker and high-TDS water.",
-    intro:
-      "Our most versatile purifier, engineered for challenging water. Reverse osmosis strips dissolved salts and heavy metals, while UV and UF handle microbes and fine particles for consistently safe, great-tasting water.",
-    image: coverFor("ro-uv-uf"),
-    gallery: galleryFor("ro-uv-uf"),
-    bestFor: ["Borewell water", "Tanker water", "High TDS water", "Mixed water sources"],
-    howItWorks: [
-      { name: "RO (Reverse Osmosis)", text: "Removes dissolved salts, heavy metals, chemicals, fluoride, and high TDS." },
-      { name: "UV (Ultraviolet)", text: "Eliminates bacteria and viruses." },
-      { name: "UF (Ultrafiltration)", text: "Removes remaining suspended particles and provides a final polishing stage." }
-    ],
-    advantages: ["Comprehensive purification", "Better taste and odor", "Handles both chemical and biological contaminants", "Suits most Indian households with varying water quality"],
-    limitations: ["Requires electricity", "Produces wastewater during RO purification", "Needs periodic filter replacement"]
-  },
-  {
-    id: "ro-uv-uf-alkaline",
-    title: "RO + UV + UF + Alkaline Water Purifier",
-    badge: "Premium",
-    category: "Premium Drinking",
-    summary: "Premium, mineral-balanced drinking water with maximum purification.",
-    intro:
-      "The complete drinking-water experience. Everything in our RO + UV + UF system, plus an alkaline mineraliser that reintroduces calcium and magnesium and balances pH — for water that's as healthy as it is pure.",
-    image: coverFor("ro-uv-uf-alkaline"),
-    gallery: galleryFor("ro-uv-uf-alkaline"),
-    bestFor: ["Families seeking premium drinking water", "Homes using borewell or high-TDS water", "Users who prefer mineral-balanced water"],
-    howItWorks: [
-      { name: "RO + UV + UF", text: "All the purification stages of the RO + UV + UF system." },
-      { name: "Alkaline Mineralizer", text: "Restores beneficial minerals such as calcium and magnesium while balancing the water's pH." }
-    ],
-    advantages: ["Maximum purification", "Reintroduces essential minerals", "Improved taste", "Balanced pH", "Protection against physical, chemical & biological contaminants"],
-    idealFor: "Families looking for both purification and enhanced drinking water quality."
-  },
-  {
-    id: "iron-removal",
-    title: "Iron Removal Filter",
-    badge: "Borewell",
-    category: "Pre-Treatment",
-    summary: "Targets iron & manganese in borewell water — no more stains or metallic taste.",
-    intro:
-      "A dedicated filter for iron- and manganese-heavy borewell water. It stops the staining, metallic taste and odour that damage fixtures, spoil laundry and shorten the life of your appliances.",
-    image: coverFor("iron-removal"),
-    gallery: galleryFor("iron-removal"),
-    bestFor: ["Borewell water containing iron or manganese"],
-    removes: ["Iron", "Manganese", "Some heavy metals"],
-    benefits: ["Prevents yellow and brown stains", "Eliminates metallic taste and odor", "Protects plumbing and appliances", "Improves laundry quality", "Reduces maintenance costs"]
-  },
-  {
-    id: "whole-house",
-    title: "Whole House Filtration System",
+    id: "household-filtration",
+    title: "Household Filtration Systems",
     badge: "Whole Home",
     category: "Point of Entry",
-    summary: "Point-of-entry treatment so every tap in the building gets cleaner water.",
+    summary: "Complete treatment for homes, villas, apartments and whole-building supply.",
     intro:
-      "Point-of-entry treatment that cleans water the moment it enters your property — so every tap, shower and appliance is protected, not just your kitchen.",
-    image: coverFor("whole-house"),
-    gallery: galleryFor("whole-house"),
-    bestFor: ["Villas", "Apartments", "Independent houses", "Hotels"],
-    purpose: "Treats water at the point where it enters the building, ensuring every tap receives cleaner water.",
-    benefits: ["Protects plumbing", "Extends appliance life", "Improves water quality throughout the property"]
+      "Complete water treatment solutions for homes, villas, apartments and whole-building water supply — protecting every tap, fixture and appliance in the property.",
+    image: coverFor("household-filtration"),
+    gallery: galleryFor("household-filtration"),
+    products: [
+      {
+        name: "Iron Removal Filter",
+        description: "Removes iron, manganese, odor and staining caused by borewell water."
+      },
+      {
+        name: "Activated Carbon Filter",
+        description:
+          "Removes chlorine, bad taste, odor and organic contaminants while improving water clarity."
+      },
+      {
+        name: "Water Softener",
+        description:
+          "Reduces hardness by removing calcium and magnesium, preventing scale formation in pipes and appliances."
+      },
+      {
+        name: "Multimedia Filter",
+        description:
+          "Uses multiple filtration media to remove sediment, suspended solids, turbidity and larger impurities before further treatment."
+      },
+      {
+        name: "Bacteria Dosing System",
+        description:
+          "Chemical dosing system that disinfects water by eliminating harmful bacteria and microorganisms — suitable for storage tanks and larger water distribution systems."
+      },
+      {
+        name: "Combination Filtration Systems",
+        description:
+          "Customized multi-stage systems designed according to water quality and customer requirements, combining several technologies in one solution.",
+        tech: ["Sediment Filters", "Iron Removal Filters", "Carbon Filters", "Water Softeners", "UV Sterilization", "Chemical Dosing"]
+      }
+    ]
   },
   {
-    id: "advanced-combination",
-    title: "Advanced Combination Filtration Systems",
-    badge: "Bespoke",
-    category: "Custom / Industrial",
-    summary: "Multiple technologies combined to solve several water problems at once.",
+    id: "alkaline-ionizer",
+    title: "Alkaline Hydrogen Ionizer Systems",
+    badge: "Wellness",
+    category: "Premium Drinking",
+    summary: "Premium ionized water designed to improve hydration and enhance quality.",
     intro:
-      "Bespoke, multi-stage systems that tackle several water problems at once. We engineer the right combination of filtration, softening and sterilisation for your specific source and demand.",
-    image: coverFor("advanced-combination"),
-    gallery: galleryFor("advanced-combination"),
-    description: "These systems combine multiple technologies to solve several water quality issues simultaneously.",
-    combos: [
-      { name: "Whole House Protection", tech: "Sediment Filter + Iron Filter + Activated Carbon", note: "Borewell water with dirt, iron, and odor issues." },
-      { name: "Hard Water Solution", tech: "Water Softener + Iron Filter", note: "Water with both hardness and iron contamination." },
-      { name: "Complete Domestic System", tech: "RO + UV + UF + Alkaline", note: "Comprehensive drinking water purification." },
-      { name: "Industrial Modular Systems", tech: "Sand Filters · Activated Carbon · Water Softeners · Iron Removal · RO Plants · UV Sterilization · Chemical Dosing", note: "Custom-built combinations for industrial needs." }
+      "Premium drinking water systems designed to improve hydration and enhance water quality. Ideal for customers seeking wellness-focused drinking water solutions.",
+    image: coverFor("alkaline-ionizer"),
+    gallery: galleryFor("alkaline-ionizer"),
+    features: [
+      "Produces alkaline water",
+      "Helps restore essential minerals",
+      "Improves taste",
+      "Supports better hydration",
+      "Can be integrated with existing RO purification systems"
+    ],
+    idealFor: "Customers seeking wellness-focused drinking water solutions.",
+    products: [
+      {
+        name: "Alkaline Hydrogen Ionizer System",
+        tagline: "Wellness-focused, mineral-rich, better-tasting water.",
+        description:
+          "Enhances everyday drinking water — producing alkaline, ionized water that supports better hydration and restores essential minerals. Can be added to your existing RO purifier."
+      }
+    ]
+  },
+  {
+    id: "industrial-treatment",
+    title: "Industrial Water Treatment Solutions",
+    badge: "Commercial & Industrial",
+    category: "Custom / Industrial",
+    summary: "High-capacity treatment systems for commercial and industrial applications.",
+    intro:
+      "High-capacity water treatment systems designed for commercial and industrial applications — engineered to your water chemistry, daily capacity and industry-specific requirements.",
+    image: coverFor("industrial-treatment"),
+    gallery: galleryFor("industrial-treatment"),
+    products: [
+      {
+        name: "Industrial RO Plants",
+        description: "High-output reverse osmosis systems for manufacturing and process water."
+      },
+      {
+        name: "Media Filtration Plants",
+        description: "Large-scale sand, multimedia and activated carbon filtration systems."
+      },
+      {
+        name: "Water Softening Plants",
+        description: "Industrial softeners that protect boilers, cooling towers and machinery."
+      },
+      {
+        name: "Iron & Manganese Removal Plants",
+        description: "Specialized treatment plants for groundwater and borewell sources."
+      },
+      {
+        name: "UV Disinfection Systems",
+        description: "Chemical-free sterilization for industrial and commercial water treatment."
+      },
+      {
+        name: "Chemical Dosing Systems",
+        description: "Automated dosing systems for disinfection, pH correction and process water treatment."
+      },
+      {
+        name: "Zero Liquid Discharge (ZLD) Systems",
+        description: "Advanced wastewater recovery and recycling systems for sustainable industrial operations."
+      },
+      {
+        name: "Custom Water Treatment Plants",
+        description:
+          "Tailor-made solutions engineered according to water chemistry, daily capacity and industry-specific requirements."
+      }
     ]
   }
 ];

@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import {
-  Droplet,
   Sparkles,
-  Shield,
   Cpu,
   Building,
+  Building2,
+  Hotel,
+  Stethoscope,
+  Briefcase,
   ArrowRight,
   Check,
   Star,
   Factory,
-  Layers,
-  Recycle,
-  Gauge,
   Settings2,
   ShieldCheck,
   Wrench,
@@ -21,11 +20,8 @@ import {
   Leaf,
   TrendingUp,
   Tag,
-  MapPin,
   Phone,
-  Mail,
-  ChevronLeft,
-  ChevronRight
+  Mail
 } from "lucide-react";
 import { systemTypes as products } from "../data/products";
 import { CONTACT } from "../data/contact";
@@ -60,11 +56,6 @@ function WhatsAppIcon({ className }) {
 export default function Home() {
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Product showcase carousel (two products per view)
-  const PER_PAGE = 2;
-  const [activePage, setActivePage] = useState(0);
-  const [slideDirection, setSlideDirection] = useState(1);
 
   // Contact form (frontend-only)
   const [contactName, setContactName] = useState("");
@@ -124,36 +115,6 @@ export default function Home() {
     navigate(`/products${systemId ? `#${systemId}` : ""}`);
   };
 
-  const pageCount = Math.max(1, Math.ceil(products.length / PER_PAGE));
-
-  const paginateProduct = (direction) => {
-    setSlideDirection(direction);
-    setActivePage((prev) => (prev + direction + pageCount) % pageCount);
-  };
-
-  const goToProductPage = (index) => {
-    setSlideDirection(index > activePage ? 1 : -1);
-    setActivePage(index);
-  };
-
-  // Auto-advance the product carousel; timer resets whenever the active page changes
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSlideDirection(1);
-      setActivePage((prev) => (prev + 1) % pageCount);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, [activePage, pageCount]);
-
-  const slideVariants = {
-    enter: (dir) => ({ x: dir > 0 ? 40 : -40, opacity: 0 }),
-    center: { x: 0, opacity: 1 },
-    exit: (dir) => ({ x: dir > 0 ? -40 : 40, opacity: 0 })
-  };
-
-  // The two products shown on the current page (resilient to title/name, summary/desc, bestFor/specs)
-  const pageItems = products.slice(activePage * PER_PAGE, activePage * PER_PAGE + PER_PAGE);
-
   // Trust indicators shown under the hero CTAs
   const trustIndicators = [
     "Residential Solutions",
@@ -163,50 +124,55 @@ export default function Home() {
     "Reliable Service Support"
   ];
 
-  // Solutions Overview — five core offerings, each linking deeper into the page
+  // Sectors We Serve — the environments Crystal Blue systems are engineered for
   const solutionsOverview = [
     {
-      id: "domestic",
-      title: "Domestic Water Purifiers",
-      desc: "Compact RO, UV, and UF purifiers engineered for kitchens and everyday drinking water in modern homes.",
-      icon: Droplet,
-      image: sectorImage("domestic"),
-      action: () => goToProducts("ro-uv-uf")
+      id: "villas",
+      sector: "Residential",
+      title: "Villas and Homes",
+      desc: "Whole-home filtration and softening for scale-free, great-tasting water at every tap.",
+      icon: Building2,
+      image: sectorImage("villas")
     },
     {
-      id: "whole-house",
-      title: "Whole House Water Filtration",
-      desc: "Point-of-entry systems that deliver chemical, sediment, and micro-plastic-free water to every outlet in the property.",
-      icon: Shield,
-      image: sectorImage("whole-house"),
-      action: () => goToProducts("whole-house")
-    },
-    {
-      id: "commercial",
-      title: "Commercial Water Treatment",
-      desc: "High-capacity systems tailored for hotels, hospitals, offices, and other commercial complexes.",
+      id: "apartments",
+      sector: "Residential",
+      title: "Apartments",
+      desc: "Compact point-of-entry systems sized for modern multi-storey living.",
       icon: Building,
-      image: sectorImage("commercial"),
-      action: () => goToProducts("advanced-combination")
+      image: sectorImage("apartments")
     },
     {
-      id: "industrial",
-      title: "Industrial Water Treatment Plants",
-      desc: "Modular RO, softening, and recycling plants built for manufacturing and processing facilities at scale.",
+      id: "premium-hotels",
+      sector: "Hospitality",
+      title: "Premium Hotels",
+      desc: "High-capacity treatment for spotless linens, sparkling glassware and guest comfort.",
+      icon: Hotel,
+      image: sectorImage("premium-hotels")
+    },
+    {
+      id: "hospitals",
+      sector: "Healthcare",
+      title: "Hospitals",
+      desc: "Consistent, high-purity water for hygiene-critical clinical environments.",
+      icon: Stethoscope,
+      image: sectorImage("hospitals")
+    },
+    {
+      id: "industrial-plants",
+      sector: "Manufacturing",
+      title: "Industrial Plants",
+      desc: "Modular RO, softening and recycling built for process water at scale.",
       icon: Factory,
-      image: sectorImage("industrial"),
-      action: () => {
-        const el = document.getElementById("industrial");
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      image: sectorImage("industrial-plants")
     },
     {
-      id: "borewell",
-      title: "Borewell Water Treatment",
-      desc: "Engineered specifically for iron, odor, turbidity, and heavy contamination common in groundwater sources.",
-      icon: Cpu,
-      image: sectorImage("borewell"),
-      action: () => goToProducts("iron-removal")
+      id: "corporate-headquarters",
+      sector: "Commercial",
+      title: "Corporate Headquarters",
+      desc: "Reliable purification for large workplaces, cafeterias and cooling systems.",
+      icon: Briefcase,
+      image: sectorImage("corporate-headquarters")
     }
   ];
 
@@ -222,33 +188,6 @@ export default function Home() {
     { title: "Affordable Pricing", desc: "Transparent quotes with no hidden costs.", icon: Tag }
   ];
 
-  // Industrial Water Treatment — core capabilities
-  const industrialCapabilities = [
-    {
-      id: "ro-systems",
-      title: "High-Capacity RO Systems",
-      desc: "Commercial reverse osmosis plants built for food & beverage processing, pharmaceuticals, and manufacturing. Multi-stage membrane arrays, automated pressure management, and high-efficiency pumps handle heavy daily throughput.",
-      icon: Layers
-    },
-    {
-      id: "media-filtration",
-      title: "Media Filtration & Softening Plants",
-      desc: "Large-scale sand filters, activated carbon filters, and water softening plants remove sediment, chlorine, organic compounds, and hardness — essential pre-treatment that prevents scale and corrosion in boilers, cooling towers, and high-pressure machinery.",
-      icon: Settings2
-    },
-    {
-      id: "iron-manganese",
-      title: "Iron & Manganese Removal Plants",
-      desc: "Engineered for facilities relying on deep-well water, using high-capacity oxidation and specialized media to prevent staining and damage to industrial pipelines and process equipment.",
-      icon: Gauge
-    },
-    {
-      id: "zld-recycle",
-      title: "Zero Liquid Discharge (ZLD) & Recycle Systems",
-      desc: "Advanced water recovery systems treat process water for reuse within the facility, lowering utility costs and minimizing environmental footprint — sustainability as a core requirement, not an afterthought.",
-      icon: Recycle
-    }
-  ];
 
   // Process Steps
   const processSteps = [
@@ -279,9 +218,6 @@ export default function Home() {
       rating: 5
     }
   ];
-
-  // Areas served across North Kerala
-  const areasServed = ["Kannur", "Taliparamba", "Payyanur", "Thalassery", "Mattannur", "Koothuparamba", "Iritty", "Panoor"];
 
   // Scroll-reveal animation variants (used with whileInView across sections)
   const fadeUp = {
@@ -407,17 +343,10 @@ export default function Home() {
                       <IconComp className="w-5 h-5" />
                     </div>
                   </div>
-                  <div className="p-7 flex flex-col flex-1 space-y-4">
+                  <div className="p-7 flex flex-col flex-1 space-y-2">
+                    <div className="text-[11px] font-mono uppercase text-[#3BA7FF] tracking-wider">{sol.sector}</div>
                     <h3 className="font-geist text-xl font-medium tracking-tight text-[#0B0B0B]">{sol.title}</h3>
                     <p className="text-gray-500 text-sm font-light leading-relaxed flex-1">{sol.desc}</p>
-                    <button
-                      onClick={sol.action}
-                      data-testid={`solution-learn-more-${sol.id}`}
-                      className="inline-flex items-center gap-2 text-sm text-[#0B0B0B] font-semibold tracking-wide border-b-2 border-gray-200 group-hover:border-[#3BA7FF] transition-all py-1 self-start"
-                    >
-                      Learn More
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
                   </div>
                 </motion.div>
               );
@@ -442,7 +371,7 @@ export default function Home() {
                 Our Products
               </h2>
               <p className="text-gray-500 font-light mt-1">
-                From compact under-counter RO units to whole-house and industrial systems—choose the engineered purifier built for your water.
+                Four engineered ranges—from home drinking-water purifiers to whole-house filtration and industrial plants. Explore the one built for your water.
               </p>
             </div>
             <Link
@@ -455,105 +384,55 @@ export default function Home() {
             </Link>
           </motion.div>
 
-          {/* Two products per view — card layout fits square product photos better */}
+          {/* All four ranges — attractive overlay tiles, no carousel */}
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.15 }}
-            variants={fadeUp}
-            className="relative"
-            data-testid="product-carousel"
+            variants={staggerContainer}
+            className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6"
+            data-testid="products-grid"
           >
-            <div className="overflow-hidden">
-              <AnimatePresence initial={false} custom={slideDirection} mode="wait">
-                <motion.div
-                  key={activePage}
-                  custom={slideDirection}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                >
-                  {pageItems.map((prod) => (
-                    <div
-                      key={prod.id}
-                      data-testid={`product-slide-${prod.id}`}
-                      className="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden flex flex-col transition-luxury hover:-translate-y-1 hover:shadow-xl group"
-                    >
-                      <div className="relative aspect-[4/3] bg-gray-50 overflow-hidden">
-                        <img
-                          src={prod.image}
-                          alt={prod.title || prod.name || ""}
-                          className="absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
-                        />
-                        {prod.badge && (
-                          <span className="absolute top-4 left-4 text-[10px] font-mono uppercase tracking-widest text-white bg-[#0B0B0B]/70 backdrop-blur-md px-3 py-1 rounded-full">
-                            {prod.badge}
-                          </span>
-                        )}
-                      </div>
-                      <div className="p-6 sm:p-7 flex flex-col flex-1">
-                        {prod.category && (
-                          <div className="text-xs font-mono uppercase text-[#3BA7FF] tracking-wider mb-2">{prod.category}</div>
-                        )}
-                        <h3 className="font-geist text-xl sm:text-2xl font-medium tracking-tight text-[#0B0B0B] mb-2">
-                          {prod.title || prod.name}
-                        </h3>
-                        <p className="text-gray-500 text-sm font-light leading-relaxed mb-5 flex-1 line-clamp-3">
-                          {prod.summary || prod.desc}
-                        </p>
-                        <Link
-                          to={`/products#${prod.id || ""}`}
-                          data-testid={`product-view-${prod.id}`}
-                          className="mt-auto self-start inline-flex items-center gap-2 bg-[#0B0B0B] text-white hover:bg-[#3BA7FF] px-6 py-3 rounded-full text-xs font-semibold tracking-wide transition-luxury"
-                        >
-                          View Details
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </Link>
-                      </div>
-                    </div>
-                  ))}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Controls */}
-            <div className="flex items-center justify-center gap-4 mt-8">
-              <button
-                onClick={() => paginateProduct(-1)}
-                aria-label="Previous products"
-                data-testid="carousel-prev"
-                className="w-11 h-11 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-600 hover:border-[#0B0B0B] hover:text-[#0B0B0B] transition-luxury"
+            {products.map((sys, index) => (
+              <motion.button
+                key={sys.id}
+                variants={fadeUp}
+                onClick={() => goToProducts(sys.id)}
+                data-testid={`product-tile-${sys.id}`}
+                className="group relative text-left rounded-2xl overflow-hidden aspect-[4/3] focus:outline-none focus:ring-2 focus:ring-[#3BA7FF] focus:ring-offset-2"
               >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <div className="flex items-center gap-2">
-                {Array.from({ length: pageCount }).map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => goToProductPage(idx)}
-                    aria-label={`Go to page ${idx + 1}`}
-                    data-testid={`carousel-dot-${idx}`}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                      idx === activePage ? "w-8 bg-[#3BA7FF]" : "w-2.5 bg-gray-300 hover:bg-gray-400"
-                    }`}
-                  />
-                ))}
-              </div>
-              <button
-                onClick={() => paginateProduct(1)}
-                aria-label="Next products"
-                data-testid="carousel-next"
-                className="w-11 h-11 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-600 hover:border-[#0B0B0B] hover:text-[#0B0B0B] transition-luxury"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
+                <img
+                  src={sys.image}
+                  alt={sys.title}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/10 group-hover:from-black/90 transition-colors" />
+                <div className="absolute inset-0 p-6 sm:p-7 flex flex-col justify-between">
+                  <div className="flex items-start justify-between">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-white/70">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    {sys.products && (
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-white/80 bg-white/10 backdrop-blur-md border border-white/15 px-2.5 py-1 rounded-full">
+                        {sys.products.length} {sys.products.length > 1 ? "products" : "product"}
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <div className="text-[11px] font-mono uppercase text-[#3BA7FF] tracking-wider mb-1.5">{sys.category}</div>
+                    <h3 className="font-geist text-xl sm:text-2xl font-medium text-white leading-tight">{sys.title}</h3>
+                    <p className="text-sm text-white/70 font-light mt-1.5 line-clamp-2">{sys.summary}</p>
+                    <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#3BA7FF] mt-4 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                      Explore range
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </span>
+                  </div>
+                </div>
+              </motion.button>
+            ))}
           </motion.div>
 
-          <div className="flex justify-center mt-8 md:hidden">
+          <div className="flex justify-center mt-10 md:hidden">
             <Link
               to="/products"
               className="inline-flex items-center gap-2 text-sm text-[#0B0B0B] font-semibold tracking-wide border-b-2 border-gray-200 hover:border-[#3BA7FF] transition-all py-1"
@@ -606,65 +485,6 @@ export default function Home() {
               );
             })}
           </motion.div>
-        </div>
-      </section>
-
-      {/* Industrial Water Treatment Plants */}
-      <section id="industrial" className="py-24 md:py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={fadeUp}
-            className="text-center max-w-2xl mx-auto mb-16"
-          >
-            <div className="text-xs uppercase tracking-[0.2em] font-semibold text-blue-500 mb-3">Industrial Division</div>
-            <h2 className="font-geist text-4xl sm:text-5xl font-light tracking-tight text-[#0B0B0B]">
-              Powering Operational Excellence
-            </h2>
-            <p className="text-gray-500 font-light mt-3">
-              We engineer industrial water treatment plants for high-capacity, high-performance, long-term reliability. Every plant is built around the specific water chemistry of the facility, whether raw borewell water, municipal supply, or process wastewater requiring recycling.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.15 }}
-            variants={staggerContainer}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-8 lg:gap-12 mb-20"
-          >
-            {industrialCapabilities.map((cap) => {
-              const IconComp = cap.icon;
-              return (
-                <motion.div
-                  key={cap.id}
-                  variants={fadeUp}
-                  data-testid={`industrial-capability-${cap.id}`}
-                  className="bg-white border border-[#E5E7EB] hover:border-gray-300 rounded-2xl p-8 space-y-4 transition-luxury hover:-translate-y-2 hover:shadow-xl group"
-                >
-                  <div className="w-12 h-12 rounded-full border border-gray-200 bg-[#F9FAFB] flex items-center justify-center text-[#0B0B0B] group-hover:text-[#3BA7FF] group-hover:border-blue-100 group-hover:bg-blue-50 transition-all duration-300">
-                    <IconComp className="w-6 h-6" />
-                  </div>
-                  <h3 className="font-geist text-xl font-medium tracking-tight text-[#0B0B0B]">{cap.title}</h3>
-                  <p className="text-gray-500 text-sm font-light leading-relaxed">{cap.desc}</p>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-
-          <div className="flex justify-center mt-16">
-            <a
-              href="#contact"
-              data-testid="industrial-cta-consult"
-              onClick={() => setContactProperty("Industry")}
-              className="inline-flex items-center gap-2 bg-[#0B0B0B] text-white hover:bg-[#3BA7FF] px-8 py-4 rounded-full text-sm font-medium tracking-wide transition-luxury"
-            >
-              Request an Industrial Water Assessment
-              <ArrowRight className="w-4 h-4" />
-            </a>
-          </div>
         </div>
       </section>
 
@@ -754,59 +574,6 @@ export default function Home() {
             </motion.div>
           ))}
         </motion.div>
-      </section>
-
-      {/* Areas We Serve */}
-      <section id="areas" data-testid="areas-section" className="py-24 md:py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-              variants={fadeUp}
-              className="lg:col-span-5 space-y-6"
-            >
-              <div className="text-xs uppercase tracking-[0.2em] font-semibold text-blue-500">Coverage</div>
-              <h2 className="font-geist text-4xl sm:text-5xl font-light tracking-tight text-[#0B0B0B]">
-                Areas We Serve
-              </h2>
-              <p className="text-gray-500 font-light leading-relaxed">
-                Crystal Blue Water Solution proudly serves residential, commercial, and industrial customers across Kannur and North Kerala, with dedicated installation and support teams based locally.
-              </p>
-              <div className="flex flex-wrap gap-2 pt-2">
-                {areasServed.map((area) => (
-                  <span
-                    key={area}
-                    data-testid={`area-chip-${area.toLowerCase()}`}
-                    className="inline-flex items-center gap-1.5 bg-[#F9FAFB] border border-gray-100 text-gray-700 text-sm px-4 py-2 rounded-full"
-                  >
-                    <MapPin className="w-3.5 h-3.5 text-[#3BA7FF]" />
-                    {area}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-              variants={fadeUp}
-              className="lg:col-span-7"
-            >
-              <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm h-[380px] sm:h-[440px]">
-                <iframe
-                  title="Crystal Blue Water Solution — Service Area Map"
-                  src="https://maps.google.com/maps?q=Kannur,Kerala,India&z=9&output=embed"
-                  className="w-full h-full border-0"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
-            </motion.div>
-          </div>
-        </div>
       </section>
 
       {/* Contact Request Form */}

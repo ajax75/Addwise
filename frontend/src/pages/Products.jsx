@@ -15,6 +15,21 @@ function SystemDetailView({ sys, onBack }) {
   const gallery = sys.gallery && sys.gallery.length ? sys.gallery : [sys.image];
   const go = (dir) => setIndex((i) => (i + dir + gallery.length) % gallery.length);
 
+  // Restart the gallery at the first image whenever the system changes
+  useEffect(() => {
+    setIndex(0);
+  }, [sys.id]);
+
+  // Auto-advance the gallery; the timer resets whenever the visible image changes
+  // (so manual navigation gives a fresh interval). Skipped when there's one image.
+  useEffect(() => {
+    if (gallery.length <= 1) return;
+    const timer = setInterval(() => {
+      setIndex((i) => (i + 1) % gallery.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [index, gallery.length]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -85,66 +100,18 @@ function SystemDetailView({ sys, onBack }) {
         </div>
 
         {/* Info */}
-        <div className="space-y-7">
+        <div className="space-y-8">
           <div>
             <div className="ds-eyebrow mb-2">Overview</div>
             <h1 className="font-geist text-3xl sm:text-4xl font-light tracking-tight text-[#0B0B0B] mb-3">{sys.title}</h1>
             <p className="ds-body">{sys.intro}</p>
           </div>
 
-          {sys.bestFor && (
+          {sys.features && (
             <div>
-              <div className="text-xs uppercase font-mono tracking-wider text-gray-400 mb-3">Best For</div>
-              <div className="flex flex-wrap gap-2">
-                {sys.bestFor.map((item) => (
-                  <span key={item} className="text-xs font-medium text-blue-600 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-full">
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {(sys.purpose || sys.description) && (
-            <p className="text-sm text-gray-600 font-light leading-relaxed">{sys.purpose || sys.description}</p>
-          )}
-
-          {sys.howItWorks && (
-            <div>
-              <div className="text-xs uppercase font-mono tracking-wider text-gray-400 mb-3">How It Works</div>
-              <div className="space-y-3">
-                {sys.howItWorks.map((step) => (
-                  <div key={step.name} className="flex gap-3">
-                    <Droplet className="w-4 h-4 text-[#3BA7FF] fill-current shrink-0 mt-0.5" />
-                    <p className="text-sm text-gray-600 font-light leading-relaxed">
-                      <span className="font-semibold text-[#0B0B0B]">{step.name}:</span> {step.text}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {sys.removes && (
-            <div>
-              <div className="text-xs uppercase font-mono tracking-wider text-gray-400 mb-3">Removes</div>
-              <div className="flex flex-wrap gap-2">
-                {sys.removes.map((item) => (
-                  <span key={item} className="text-xs font-medium text-gray-700 bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-full">
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {(sys.advantages || sys.benefits) && (
-            <div>
-              <div className="text-xs uppercase font-mono tracking-wider text-gray-400 mb-3">
-                {sys.advantages ? "Advantages" : "Benefits"}
-              </div>
+              <div className="text-xs uppercase font-mono tracking-wider text-gray-400 mb-3">Features</div>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
-                {(sys.advantages || sys.benefits).map((item) => (
+                {sys.features.map((item) => (
                   <li key={item} className="flex items-start gap-2 text-sm text-gray-600 font-light">
                     <Check className="w-4 h-4 text-[#3BA7FF] shrink-0 mt-0.5" />
                     {item}
@@ -154,18 +121,45 @@ function SystemDetailView({ sys, onBack }) {
             </div>
           )}
 
-          {sys.combos && (
+          {sys.products && (
             <div>
-              <div className="text-xs uppercase font-mono tracking-wider text-gray-400 mb-3">Common Combinations</div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {sys.combos.map((combo) => (
-                  <div key={combo.name} className="border border-gray-200 rounded-xl p-4 bg-[#F9FAFB]">
-                    <div className="flex items-center gap-2 mb-1.5">
-                      <Layers className="w-4 h-4 text-[#3BA7FF] shrink-0" />
-                      <span className="font-geist text-sm font-semibold text-[#0B0B0B]">{combo.name}</span>
+              <div className="text-xs uppercase font-mono tracking-wider text-gray-400 mb-4">
+                {sys.products.length > 1 ? `Products in this range (${sys.products.length})` : "Product"}
+              </div>
+              <div className="space-y-3">
+                {sys.products.map((prod, i) => (
+                  <div
+                    key={prod.name}
+                    className="border border-gray-200 rounded-xl p-5 bg-[#F9FAFB] hover:border-[#3BA7FF]/50 transition-colors"
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="shrink-0 mt-0.5 w-7 h-7 rounded-full bg-white border border-gray-200 flex items-center justify-center text-[11px] font-mono text-[#3BA7FF]">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <div className="flex-1">
+                        <h3 className="font-geist text-base font-semibold text-[#0B0B0B] leading-snug">{prod.name}</h3>
+                        {prod.tagline && (
+                          <div className="flex items-center gap-1.5 text-xs font-medium text-[#3BA7FF] mt-1">
+                            <Droplet className="w-3.5 h-3.5 fill-current shrink-0" />
+                            {prod.tagline}
+                          </div>
+                        )}
+                        <p className="text-sm text-gray-600 font-light leading-relaxed mt-2">{prod.description}</p>
+                        {prod.tech && (
+                          <div className="flex flex-wrap gap-2 mt-3">
+                            {prod.tech.map((t) => (
+                              <span
+                                key={t}
+                                className="inline-flex items-center gap-1.5 text-[11px] font-medium text-gray-700 bg-white border border-gray-200 px-2.5 py-1 rounded-full"
+                              >
+                                <Layers className="w-3 h-3 text-[#3BA7FF]" />
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div className="text-xs font-mono text-[#3BA7FF] leading-relaxed mb-1.5">{combo.tech}</div>
-                    <p className="text-xs text-gray-500 font-light leading-relaxed">{combo.note}</p>
                   </div>
                 ))}
               </div>
@@ -229,7 +223,7 @@ export default function Products() {
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">
               {systemTypes.map((sys, index) => (
                 <motion.button
                   key={sys.id}
@@ -246,15 +240,23 @@ export default function Products() {
                     alt={sys.title}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/10 group-hover:from-black/85 transition-colors" />
-                  <div className="absolute inset-0 p-5 sm:p-6 flex flex-col justify-between">
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-white/70">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/10 group-hover:from-black/90 transition-colors" />
+                  <div className="absolute inset-0 p-6 sm:p-7 flex flex-col justify-between">
+                    <div className="flex items-start justify-between">
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-white/70">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      {sys.products && (
+                        <span className="text-[10px] font-mono uppercase tracking-widest text-white/80 bg-white/10 backdrop-blur-md border border-white/15 px-2.5 py-1 rounded-full">
+                          {sys.products.length} {sys.products.length > 1 ? "products" : "product"}
+                        </span>
+                      )}
+                    </div>
                     <div>
-                      <h3 className="font-geist text-lg font-medium text-white leading-tight">{sys.title}</h3>
-                      <p className="text-xs text-white/70 font-light mt-1 line-clamp-2">{sys.summary}</p>
-                      <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#3BA7FF] mt-3 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                      <div className="text-[11px] font-mono uppercase text-[#3BA7FF] tracking-wider mb-1.5">{sys.category}</div>
+                      <h3 className="font-geist text-xl sm:text-2xl font-medium text-white leading-tight">{sys.title}</h3>
+                      <p className="text-sm text-white/70 font-light mt-1.5 line-clamp-2">{sys.summary}</p>
+                      <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#3BA7FF] mt-4 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                         View gallery & details
                         <ArrowRight className="w-3.5 h-3.5" />
                       </span>
