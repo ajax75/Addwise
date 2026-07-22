@@ -26,7 +26,7 @@ def api_client():
     return session
 
 class TestWaterLabAndInquiries:
-    """Test suite for Crystal Blue Water Solution Backend APIs"""
+    """Test suite for Crystal Blue Water Solutions Backend APIs"""
 
     def test_root_endpoint(self, api_client):
         """Verify the API root/health check endpoint is online"""
@@ -36,7 +36,7 @@ class TestWaterLabAndInquiries:
         data = response.json()
         assert data["status"] == "online"
         assert "brand" in data
-        assert data["brand"] == "Crystal Blue Water Solution"
+        assert data["brand"] == "Crystal Blue Water Solutions"
 
     def test_analyze_water_endpoint(self, api_client):
         """Test POST /api/analyze-water with sliders/source inputs"""

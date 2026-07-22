@@ -1,23 +1,28 @@
-# Sector Photo Prompts — "Sectors We Serve"
+# Sector Photo Prompts — "Industries We Serve"
 
-Image-generation prompts for the six sector cards on the home page.
+Image-generation prompts for the six industry cards on the home page.
 
 ## How to use
-1. Generate one image per sector using the prompts below.
-2. Save each as **`1.jpg`** inside its matching folder:
-   `frontend/src/assets/sectors/<folder>/1.jpg`
-   (Any filename/format works — jpg/png/webp — and multiple images per folder are
-   auto-discovered; the first one alphabetically is used as the card photo.)
-3. The card overwrites the seeded placeholder automatically on the next build.
+1. Generate one image per industry using the prompts below.
+2. Save it inside the matching folder:
+   `frontend/src/assets/sectors/<folder>/`
+   Any filename and format works (jpg / png / **webp** / avif / gif). Multiple
+   images per folder are auto-discovered; the **first one alphabetically** is
+   used as the card photo.
+3. The card picks it up automatically on the next build — no code change needed.
 
-| Card | Folder | Save as |
-|------|--------|---------|
-| Residential · Villas and Homes | `villas/` | `1.jpg` |
-| Residential · Apartments | `apartments/` | `1.jpg` |
-| Hospitality · Premium Hotels | `premium-hotels/` | `1.jpg` |
-| Healthcare · Hospitals | `hospitals/` | `1.jpg` |
-| Manufacturing · Industrial Plants | `industrial-plants/` | `1.jpg` |
-| Commercial · Corporate Headquarters | `corporate-headquarters/` | `1.jpg` |
+> Folder names must match the card `id` values in
+> `frontend/src/pages/Home.jsx` (`solutionsOverview`). Renaming a folder without
+> updating that array silently falls back to a grey placeholder.
+
+| # | Card | Folder | Current photo |
+|---|------|--------|---------------|
+| 1 | Residential · Homes & Villas | `homes-villas/` | `villa.webp` |
+| 2 | Hospitality · Hotels & Resorts | `hotels-resorts/` | `hotel.webp` |
+| 3 | Institutional · Schools & Offices | `schools-offices/` | `corperate.webp` |
+| 4 | Healthcare · Hospitals & Healthcares | `hospitals-healthcare/` | `hospital.webp` |
+| 5 | Industrial · Industries & Manufacturing | `industries-manufacturing/` | `industry.webp` |
+| 6 | Commercial · Commercial Buildings | `commercial-buildings/` | `Apartment.webp` |
 
 ## Shared style (append to every prompt for a cohesive set)
 > Photorealistic, premium editorial photography. Clean, bright, modern.
@@ -29,34 +34,35 @@ Image-generation prompts for the six sector cards on the home page.
 
 ---
 
-## 1. Residential · Villas → `villas/1.jpg`
+## 1. Residential · Homes & Villas → `homes-villas/`
 > Exterior of a modern villa at golden hour — clean architectural lines,
 > floor-to-ceiling glass, a pool with crystal-clear blue water in the foreground,
 > manicured landscaping, warm interior glow. Upscale, serene, water-forward.
 > [+ shared style]
 
-## 2. Residential · Apartments → `apartments/1.jpg`
-> A sleek residential apartment tower with glass balconies, shot from a low angle
-> against a soft blue sky. Contemporary, minimalist, modern urban living.
-> Optional: a bright modern kitchen with a glass of clean water on the counter.
+## 2. Hospitality · Hotels & Resorts → `hotels-resorts/`
+> A five-star resort poolside terrace or hotel lobby — polished marble, elegant
+> lighting, palm shade, a tranquil infinity pool or spa with pristine blue water.
+> Refined, welcoming, luxurious holiday atmosphere. [+ shared style]
+
+## 3. Institutional · Schools & Offices → `schools-offices/`
+> A bright modern school corridor or open-plan office interior — students or
+> staff moving in soft motion blur, a clean drinking-water station or water
+> cooler in frame, large windows and daylight. Orderly, healthy, communal.
 > [+ shared style]
 
-## 3. Hospitality · Premium Hotels → `premium-hotels/1.jpg`
-> A five-star hotel lobby or poolside terrace — polished marble floors, elegant
-> lighting, a tranquil reflecting pool or spa with pristine blue water. Refined,
-> welcoming, luxurious hospitality atmosphere. [+ shared style]
-
-## 4. Healthcare · Hospitals → `hospitals/1.jpg`
+## 4. Healthcare · Hospitals & Healthcares → `hospitals-healthcare/`
 > A spotless modern hospital corridor or ward entrance — sterile white and
 > stainless-steel surfaces, clean blue medical accents, bright even lighting.
 > Precise, hygienic, high-trust clinical environment. [+ shared style]
 
-## 5. Manufacturing · Industrial Plants → `industrial-plants/1.jpg`
+## 5. Industrial · Industries & Manufacturing → `industries-manufacturing/`
 > A large industrial water-treatment / processing plant interior — stainless-steel
 > tanks, pipework and RO membrane racks, clean and well-lit facility floor. Blue
 > equipment accents, engineered and high-capacity feel. [+ shared style]
 
-## 6. Commercial · Corporate Headquarters → `corporate-headquarters/1.jpg`
-> A sleek corporate office building exterior — a glass-and-steel headquarters
-> tower with blue-sky reflections, or a bright modern office atrium with a
-> water feature. Professional, polished, corporate. [+ shared style]
+## 6. Commercial · Commercial Buildings → `commercial-buildings/`
+> A contemporary mixed-use commercial tower or mall atrium — glass-and-steel
+> facade with blue-sky reflections, or a bright indoor atrium with a water
+> feature and balconied floors. Professional, polished, high-footfall.
+> [+ shared style]

@@ -6,6 +6,7 @@ const navLinks = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
   { to: "/products", label: "Products" },
+  { to: "/gallery", label: "Gallery" },
   { to: "/#contact", label: "Contact" }
 ];
 
@@ -33,7 +34,7 @@ export default function Navbar() {
           <Link to="/" data-testid="navbar-logo" className="flex items-center gap-2.5">
             <img
               src={`${process.env.PUBLIC_URL}/assets/logo.png`}
-              alt="Crystal Blue Water Solution"
+              alt="Crystal Blue Water Solutions"
               className="h-10 sm:h-11 w-auto object-contain"
             />
             <span className="flex flex-col leading-none">
@@ -41,7 +42,7 @@ export default function Navbar() {
                 Crystal <span className="font-light text-gray-500">Blue</span>
               </span>
               <span className="text-[10px] uppercase tracking-[0.22em] font-medium text-[#3BA7FF] mt-1">
-                Water Solution
+                Water Solutions
               </span>
             </span>
           </Link>

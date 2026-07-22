@@ -8,7 +8,7 @@ import {
   Building2,
   Hotel,
   Stethoscope,
-  Briefcase,
+  GraduationCap,
   ArrowRight,
   Check,
   Star,
@@ -124,55 +124,55 @@ export default function Home() {
     "Reliable Service Support"
   ];
 
-  // Sectors We Serve — the environments Crystal Blue systems are engineered for
+  // Industries We Serve — the environments Crystal Blue systems are engineered for
   const solutionsOverview = [
     {
-      id: "villas",
+      id: "homes-villas",
       sector: "Residential",
-      title: "Villas and Homes",
+      title: "Homes & Villas",
       desc: "Whole-home filtration and softening for scale-free, great-tasting water at every tap.",
       icon: Building2,
-      image: sectorImage("villas")
+      image: sectorImage("homes-villas")
     },
     {
-      id: "apartments",
-      sector: "Residential",
-      title: "Apartments",
-      desc: "Compact point-of-entry systems sized for modern multi-storey living.",
-      icon: Building,
-      image: sectorImage("apartments")
-    },
-    {
-      id: "premium-hotels",
+      id: "hotels-resorts",
       sector: "Hospitality",
-      title: "Premium Hotels",
-      desc: "High-capacity treatment for spotless linens, sparkling glassware and guest comfort.",
+      title: "Hotels & Resorts",
+      desc: "High-capacity treatment for guest rooms, kitchens, pools and spa facilities.",
       icon: Hotel,
-      image: sectorImage("premium-hotels")
+      image: sectorImage("hotels-resorts")
     },
     {
-      id: "hospitals",
+      id: "schools-offices",
+      sector: "Institutional",
+      title: "Schools & Offices",
+      desc: "Safe drinking-water stations and filtration for campuses, canteens and workplaces.",
+      icon: GraduationCap,
+      image: sectorImage("schools-offices")
+    },
+    {
+      id: "hospitals-healthcare",
       sector: "Healthcare",
-      title: "Hospitals",
+      title: "Hospitals & Healthcares",
       desc: "Consistent, high-purity water for hygiene-critical clinical environments.",
       icon: Stethoscope,
-      image: sectorImage("hospitals")
+      image: sectorImage("hospitals-healthcare")
     },
     {
-      id: "industrial-plants",
-      sector: "Manufacturing",
-      title: "Industrial Plants",
+      id: "industries-manufacturing",
+      sector: "Industrial",
+      title: "Industries & Manufacturing",
       desc: "Modular RO, softening and recycling built for process water at scale.",
       icon: Factory,
-      image: sectorImage("industrial-plants")
+      image: sectorImage("industries-manufacturing")
     },
     {
-      id: "corporate-headquarters",
+      id: "commercial-buildings",
       sector: "Commercial",
-      title: "Corporate Headquarters",
-      desc: "Reliable purification for large workplaces, cafeterias and cooling systems.",
-      icon: Briefcase,
-      image: sectorImage("corporate-headquarters")
+      title: "Commercial Buildings",
+      desc: "Centralised purification for apartments, malls and mixed-use complexes.",
+      icon: Building,
+      image: sectorImage("commercial-buildings")
     }
   ];
 
@@ -266,7 +266,7 @@ export default function Home() {
           </motion.h1>
 
           <motion.p variants={fadeUp} className="ds-lead max-w-2xl mx-auto mb-12">
-            Crystal Blue Water Solution provides premium residential, commercial, and industrial water filtration systems across Kannur and Kerala — customized water treatment for clean, safe, and reliable water.
+            Crystal Blue Water Solutions provides premium residential, commercial, and industrial water filtration systems across Kannur and Kerala — customized water treatment for clean, safe, and reliable water.
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-5">
@@ -310,7 +310,7 @@ export default function Home() {
           >
             <div className="text-xs uppercase tracking-[0.2em] font-semibold text-blue-500 mb-3">Who We Serve</div>
             <h2 className="font-geist text-4xl sm:text-5xl font-light tracking-tight text-[#0B0B0B]">
-              Sectors We Serve
+              Industries We Serve
             </h2>
             <p className="text-gray-500 font-light mt-3">
               From a single kitchen tap to an entire industrial plant, every Crystal Blue system is engineered around your water.
@@ -721,7 +721,7 @@ export default function Home() {
                       data-testid="contact-phone-input"
                       value={contactPhone}
                       onChange={(e) => setContactPhone(e.target.value)}
-                      placeholder="e.g., +91 98765 43210"
+                      placeholder="e.g., +91 79077 68464"
                       className="w-full bg-transparent border-b border-gray-200 hover:border-gray-400 focus:border-[#3BA7FF] pb-2 text-sm focus:outline-none transition-colors"
                     />
                   </div>

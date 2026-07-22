@@ -41,7 +41,7 @@
     "corners": "rounded-2xl for main cards, completely sharp (rounded-none) for editorial images to maintain luxury tension."
   },
   "surfaces_and_materials": {
-    "glassmorphism": "backdrop-blur-2xl bg-white/70 border border-white/40 shadow-sm (Use for Navbar and Water Solution Cards)",
+    "glassmorphism": "backdrop-blur-2xl bg-white/70 border border-white/40 shadow-sm (Use for Navbar and Water Solutions Cards)",
     "cards": "Flat background (bg-[#F9FAFB]), 1px solid border-[#E5E7EB], hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-out",
     "buttons": "bg-[#0B0B0B] text-white hover:bg-[#3BA7FF] hover:text-white transition-colors duration-300 px-8 py-4 rounded-full font-medium"
   },

@@ -105,14 +105,14 @@ export default function About() {
             >
               <motion.div variants={fadeUp} className="ds-eyebrow">About Us</motion.div>
               <motion.h1 variants={fadeUp} data-testid="about-hero-heading" className="ds-h2">
-                About Crystal Blue Water Solution
+                About Crystal Blue Water Solutions
               </motion.h1>
               <motion.p variants={fadeUp} className="ds-lead">
                 Delivering Safe, Pure, and Reliable Water Solutions for Homes, Businesses, and Industries.
               </motion.p>
 
               <motion.p variants={fadeUp} className="ds-body">
-                At Crystal Blue Water Solution, we believe clean water is essential for healthy living and successful
+                At Crystal Blue Water Solutions, we believe clean water is essential for healthy living and successful
                 businesses. We specialize in advanced water purification and treatment systems designed to provide
                 safe, high-quality water for residential, commercial, and industrial applications.
               </motion.p>

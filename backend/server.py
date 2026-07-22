@@ -28,7 +28,7 @@ logger.info(f"Connecting to MongoDB at {mongo_url}, DB: {db_name}")
 client = AsyncIOMotorClient(mongo_url)
 db = client[db_name]
 
-app = FastAPI(title="Crystal Blue Water Solution API")
+app = FastAPI(title="Crystal Blue Water Solutions API")
 
 # Setup CORS Origins
 cors_origins = os.environ.get('CORS_ORIGINS', '*').split(',')
@@ -117,7 +117,7 @@ class WaterAnalysisReport(BaseModel):
 async def root():
     return {
         "status": "online",
-        "brand": "Crystal Blue Water Solution",
+        "brand": "Crystal Blue Water Solutions",
         "description": "Premium Engineered Water Filtration Systems",
         "framework": "FastAPI + MongoDB"
     }

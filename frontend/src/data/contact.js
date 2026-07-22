@@ -2,8 +2,8 @@
    Update these with the real values. */
 export const CONTACT = {
   phones: [
-    { display: "+91 98765 43210", href: "+919876543210" },
-    { display: "+91 91234 56789", href: "+919123456789" }
+    { display: "+91 79077 68464", href: "+917907768464" },
+    { display: "+91 73568 68464", href: "+917356868464" }
   ],
   email: "crystalblue8464@gmail.com",
   // WhatsApp number in international format, no "+" or spaces.
@@ -12,7 +12,7 @@ export const CONTACT = {
   social: {
     // Instagram handle from the profile: @crystal_blue_water_solution
     instagram: "https://www.instagram.com/crystal_blue_water_solution/",
-    // TODO: replace with the exact Facebook page URL (name is "Crystal Blue Water Solution")
+    // TODO: replace with the exact Facebook page URL (name is "Crystal Blue Water Solutions")
     facebook: "https://www.facebook.com/CrystalBlueWaterSolution"
   }
 };

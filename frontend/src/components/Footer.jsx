@@ -13,13 +13,13 @@ export default function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2.5">
-              <img src={`${process.env.PUBLIC_URL}/assets/logo.png`} alt="Crystal Blue Water Solution" className="h-9 w-auto object-contain" />
+              <img src={`${process.env.PUBLIC_URL}/assets/logo.png`} alt="Crystal Blue Water Solutions" className="h-9 w-auto object-contain" />
               <span className="flex flex-col leading-none">
                 <span className="font-geist text-base font-semibold tracking-tight text-[#0B0B0B]">
                   Crystal <span className="font-light text-gray-500">Blue</span>
                 </span>
                 <span className="text-[9px] uppercase tracking-[0.22em] font-medium text-[#3BA7FF] mt-0.5">
-                  Water Solution
+                  Water Solutions
                 </span>
               </span>
             </div>
@@ -92,13 +92,14 @@ export default function Footer() {
             <div className="flex flex-col gap-2 text-sm md:items-end">
               <Link to="/about" className="hover:text-[#0B0B0B] transition-colors">About</Link>
               <Link to="/products" className="hover:text-[#0B0B0B] transition-colors">Products</Link>
+              <Link to="/gallery" className="hover:text-[#0B0B0B] transition-colors">Gallery</Link>
               <Link to="/#contact" className="hover:text-[#0B0B0B] transition-colors">Contact</Link>
             </div>
           </div>
         </div>
 
         <div className="border-t border-gray-100 pt-6 text-xs text-gray-400 text-center">
-          © {new Date().getFullYear()} Crystal Blue Water Solution. All rights reserved.
+          © {new Date().getFullYear()} Crystal Blue Water Solutions. All rights reserved.
         </div>
       </div>
     </footer>

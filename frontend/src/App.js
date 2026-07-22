@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Products from "./pages/Products";
+import Gallery from "./pages/Gallery";
 
 /* Branded full-screen loader shown on initial load, then fades out.
    Defined inline in this tracked file so it survives the repo auto-revert. */
@@ -24,7 +25,7 @@ function Loader() {
         <div className="absolute w-32 h-32 rounded-full bg-[#3BA7FF]/20 blur-3xl" />
         <motion.img
           src={`${process.env.PUBLIC_URL}/assets/logo.png`}
-          alt="Crystal Blue Water Solution"
+          alt="Crystal Blue Water Solutions"
           className="relative w-20 sm:w-24 h-auto object-contain"
           animate={{ scale: [1, 1.06, 1], opacity: [0.85, 1, 0.85] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
@@ -36,7 +37,7 @@ function Loader() {
           Crystal <span className="font-light text-white/60">Blue</span>
         </span>
         <span className="text-[10px] uppercase tracking-[0.25em] font-medium text-[#3BA7FF] mt-1.5">
-          Water Solution
+          Water Solutions
         </span>
       </div>
 
@@ -145,6 +146,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/gallery" element={<Gallery />} />
         </Routes>
         <Footer />
       </div>
