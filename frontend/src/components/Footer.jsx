@@ -24,8 +24,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-xs text-gray-400 leading-relaxed max-w-xs">
-              Clean, safe, and reliable water treatment solutions for homes, businesses, and industries across Kannur
-              and North Kerala.
+              Clean, safe, and reliable water treatment solutions for homes, businesses, and industries across Kerala.
             </p>
             <div className="flex items-center gap-3">
               {CONTACT.social?.facebook && (

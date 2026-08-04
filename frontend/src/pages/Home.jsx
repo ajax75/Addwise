@@ -40,6 +40,10 @@ Object.keys(sectorImages).forEach((folder) => {
     .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
     .map((key) => sectorCtx(key));
 });
+/* Gap between one product tile advancing and the next one advancing.
+   With 4 tiles in the rotation each tile changes every TILE_ROTATE_MS × 4. */
+const TILE_ROTATE_MS = 2200;
+
 const SECTOR_PLACEHOLDER =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Crect width='100%25' height='100%25' fill='%23EEF2F6'/%3E%3C/svg%3E";
 const sectorImage = (id) => (sectorImages[id] && sectorImages[id][0]) || SECTOR_PLACEHOLDER;
@@ -88,9 +92,36 @@ export default function Home() {
     }
   }, []);
 
+  /* Product tiles cycle through their own folder gallery, one tile at a time:
+     tile 1 changes, then tile 2, then tile 3 ... and back around. Tiles with a
+     single photo are skipped so they never sit idle in the rotation. */
+  const [tileFrames, setTileFrames] = useState(() => products.map(() => 0));
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const rotatable = products
+      .map((sys, i) => ((sys.gallery?.length || 0) > 1 ? i : -1))
+      .filter((i) => i !== -1);
+    if (!rotatable.length) return;
+
+    let turn = 0;
+    const id = setInterval(() => {
+      const tile = rotatable[turn % rotatable.length];
+      turn += 1;
+      setTileFrames((prev) => {
+        const next = [...prev];
+        next[tile] = (next[tile] + 1) % products[tile].gallery.length;
+        return next;
+      });
+    }, TILE_ROTATE_MS);
+
+    return () => clearInterval(id);
+  }, []);
+
   const handleContactSubmit = (e) => {
     e.preventDefault();
-    if (!contactName || !contactEmail || !contactMessage) return;
+    if (!contactName || !contactPhone) return;
     setIsContactSubmitting(true);
     setTimeout(() => {
       setContactSuccess(true);
@@ -401,11 +432,17 @@ export default function Home() {
                 data-testid={`product-tile-${sys.id}`}
                 className="group relative text-left rounded-2xl overflow-hidden aspect-[4/3] focus:outline-none focus:ring-2 focus:ring-[#3BA7FF] focus:ring-offset-2"
               >
-                <img
-                  src={sys.image}
-                  alt={sys.title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+                {(sys?.gallery?.length ? sys.gallery : [sys.image]).map((src, frame) => (
+                  <img
+                    key={frame}
+                    src={src}
+                    alt={frame === 0 ? sys.title : ""}
+                    aria-hidden={frame !== 0}
+                    className={`absolute inset-0 w-full h-full object-cover transition-[opacity,transform] duration-700 group-hover:scale-105 ${
+                      frame === tileFrames[index] ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+                ))}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/10 group-hover:from-black/90 transition-colors" />
                 <div className="absolute inset-0 p-6 sm:p-7 flex flex-col justify-between">
                   <div className="flex items-start justify-between">
@@ -700,10 +737,9 @@ export default function Home() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs uppercase font-mono tracking-wider text-gray-400">Email Address *</label>
+                    <label className="text-xs uppercase font-mono tracking-wider text-gray-400">Email Address</label>
                     <input
                       type="email"
-                      required
                       data-testid="contact-email-input"
                       value={contactEmail}
                       onChange={(e) => setContactEmail(e.target.value)}
@@ -715,9 +751,10 @@ export default function Home() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                   <div className="space-y-2">
-                    <label className="text-xs uppercase font-mono tracking-wider text-gray-400">Phone Number</label>
+                    <label className="text-xs uppercase font-mono tracking-wider text-gray-400">Phone Number *</label>
                     <input
                       type="tel"
+                      required
                       data-testid="contact-phone-input"
                       value={contactPhone}
                       onChange={(e) => setContactPhone(e.target.value)}
@@ -747,7 +784,7 @@ export default function Home() {
                 <div className="space-y-3">
                   <label className="text-xs uppercase font-mono tracking-wider text-gray-400 block">Solutions Needed</label>
                   <div className="flex flex-wrap gap-2">
-                    {["Whole House Filtration", "Borewell Treatment", "Water Softener", "Commercial System", "Custom Design"].map((solName) => (
+                    {["Domestic Purifier", "Water Test Only", "Commercial System", "Custom Design"].map((solName) => (
                       <button
                         type="button"
                         key={solName}
@@ -766,9 +803,8 @@ export default function Home() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs uppercase font-mono tracking-wider text-gray-400">Message / Inquiry Details *</label>
+                  <label className="text-xs uppercase font-mono tracking-wider text-gray-400">Message / Inquiry Details</label>
                   <textarea
-                    required
                     data-testid="contact-message-textarea"
                     rows="3"
                     value={contactMessage}

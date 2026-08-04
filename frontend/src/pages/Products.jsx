@@ -223,47 +223,84 @@ export default function Products() {
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">
-              {systemTypes.map((sys, index) => (
-                <motion.button
-                  key={sys.id}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, amount: 0.2 }}
-                  variants={fadeUp}
-                  onClick={() => navigate(`/products#${sys.id}`)}
-                  data-testid={`system-tile-${sys.id}`}
-                  className="group relative text-left rounded-2xl overflow-hidden aspect-[4/3] focus:outline-none focus:ring-2 focus:ring-[#3BA7FF] focus:ring-offset-2"
-                >
-                  <img
-                    src={sys.image}
-                    alt={sys.title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/10 group-hover:from-black/90 transition-colors" />
-                  <div className="absolute inset-0 p-6 sm:p-7 flex flex-col justify-between">
-                    <div className="flex items-start justify-between">
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-white/70">
-                        {String(index + 1).padStart(2, "0")}
+            {/* Editorial listing — image and copy alternate sides down the page */}
+            <div className="divide-y divide-gray-100">
+              {systemTypes.map((sys, index) => {
+                const imageRight = index % 2 === 0;
+                const items = sys.products || [];
+                const highlights = items.slice(0, 4);
+                const remaining = items.length - highlights.length;
+                const open = () => navigate(`/products#${sys.id}`);
+
+                return (
+                  <motion.article
+                    key={sys.id}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.2 }}
+                    variants={fadeUp}
+                    className="grid grid-cols-1 lg:grid-cols-12 items-center gap-8 lg:gap-16 py-14 md:py-20 first:pt-0"
+                  >
+                    {/* Photo */}
+                    <button
+                      onClick={open}
+                      tabIndex={-1}
+                      aria-hidden="true"
+                      className={`group relative lg:col-span-7 overflow-hidden rounded-2xl border border-gray-200 bg-[#F9FAFB] ${
+                        imageRight ? "lg:order-2" : "lg:order-1"
+                      }`}
+                    >
+                      <div className="aspect-[4/3] sm:aspect-[16/10]">
+                        <img
+                          src={sys.image}
+                          alt=""
+                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                        />
+                      </div>
+                      <span className="absolute top-5 left-5 inline-flex items-center rounded-full bg-white/85 backdrop-blur-md border border-white/60 px-3 py-1.5 text-[11px] font-mono uppercase tracking-widest text-[#0B0B0B]">
+                        {sys.badge}
                       </span>
-                      {sys.products && (
-                        <span className="text-[10px] font-mono uppercase tracking-widest text-white/80 bg-white/10 backdrop-blur-md border border-white/15 px-2.5 py-1 rounded-full">
-                          {sys.products.length} {sys.products.length > 1 ? "products" : "product"}
+                    </button>
+
+                    {/* Copy */}
+                    <div className={`lg:col-span-5 ${imageRight ? "lg:order-1" : "lg:order-2"}`}>
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="text-xs font-mono tracking-widest text-gray-400">
+                          {String(index + 1).padStart(2, "0")}
                         </span>
+                        <span className="h-px w-6 bg-gray-200" />
+                        <span className="ds-eyebrow">{sys.category}</span>
+                      </div>
+
+                      <h2 className="ds-h3">{sys.title}</h2>
+                      <p className="ds-body mt-4">{sys.summary}</p>
+
+                      {highlights.length > 0 && (
+                        <ul className="mt-6 space-y-2.5">
+                          {highlights.map((prod) => (
+                            <li key={prod.name} className="flex items-start gap-2.5 text-sm font-light text-gray-600">
+                              <Check className="w-4 h-4 text-[#3BA7FF] shrink-0 mt-1" />
+                              {prod.name}
+                            </li>
+                          ))}
+                          {remaining > 0 && (
+                            <li className="ds-small pl-[26px]">+{remaining} more in this range</li>
+                          )}
+                        </ul>
                       )}
+
+                      <button
+                        onClick={open}
+                        data-testid={`system-tile-${sys.id}`}
+                        className="group inline-flex items-center gap-2 mt-8 pb-1 text-sm font-semibold tracking-wide text-[#0B0B0B] border-b-2 border-gray-200 hover:border-[#3BA7FF] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3BA7FF] focus-visible:ring-offset-4 rounded-sm"
+                      >
+                        View gallery &amp; details
+                        <ArrowRight className="w-4 h-4 text-[#3BA7FF] transition-transform duration-300 group-hover:translate-x-1" />
+                      </button>
                     </div>
-                    <div>
-                      <div className="text-[11px] font-mono uppercase text-[#3BA7FF] tracking-wider mb-1.5">{sys.category}</div>
-                      <h3 className="font-geist text-xl sm:text-2xl font-medium text-white leading-tight">{sys.title}</h3>
-                      <p className="text-sm text-white/70 font-light mt-1.5 line-clamp-2">{sys.summary}</p>
-                      <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#3BA7FF] mt-4 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                        View gallery & details
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </span>
-                    </div>
-                  </div>
-                </motion.button>
-              ))}
+                  </motion.article>
+                );
+              })}
             </div>
           </>
         )}
