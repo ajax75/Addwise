@@ -24,7 +24,8 @@ import {
   Mail
 } from "lucide-react";
 import { systemTypes as products } from "../data/products";
-import { CONTACT } from "../data/contact";
+import { CONTACT, waHref, buildInquiryMessage } from "../data/contact";
+import { sendInquiryEmail } from "../lib/email";
 
 /* Sector photos are auto-discovered from src/assets/sectors/<id>/.
    Drop any image into a sector's folder and it's used as that card's photo. */
@@ -43,6 +44,10 @@ Object.keys(sectorImages).forEach((folder) => {
 /* Gap between one product tile advancing and the next one advancing.
    With 4 tiles in the rotation each tile changes every TILE_ROTATE_MS × 4. */
 const TILE_ROTATE_MS = 2200;
+
+// Testimonials are hidden until we have approved customer quotes — flip to
+// true to bring the section back; the content below is kept as-is.
+const SHOW_TESTIMONIALS = false;
 
 const SECTOR_PLACEHOLDER =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Crect width='100%25' height='100%25' fill='%23EEF2F6'/%3E%3C/svg%3E";
@@ -70,6 +75,9 @@ export default function Home() {
   const [contactSelectedSolutions, setContactSelectedSolutions] = useState([]);
   const [isContactSubmitting, setIsContactSubmitting] = useState(false);
   const [contactSuccess, setContactSuccess] = useState(false);
+  // Offered on the success panel as a second channel alongside the email
+  const [lastWhatsAppHref, setLastWhatsAppHref] = useState("");
+  const [contactError, setContactError] = useState("");
 
   // Scroll to in-page section when arriving via a hash link (e.g. from Navbar/Footer or /about)
   useEffect(() => {
@@ -119,19 +127,45 @@ export default function Home() {
     return () => clearInterval(id);
   }, []);
 
-  const handleContactSubmit = (e) => {
+  /* Emails the request to the office through EmailJS — sent from the browser,
+     no backend. The same details are also prepared as a WhatsApp deep link,
+     offered on the success panel as a second channel (and as the fallback when
+     the send fails) rather than opening a tab on every submit. */
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
     if (!contactName || !contactPhone) return;
+
+    const details = {
+      name: contactName,
+      phone: contactPhone,
+      email: contactEmail,
+      property: contactProperty,
+      solutions: contactSelectedSolutions,
+      message: contactMessage
+    };
+
     setIsContactSubmitting(true);
-    setTimeout(() => {
+    setContactError("");
+    setLastWhatsAppHref(waHref(CONTACT.inquiryWhatsappNumber, buildInquiryMessage(details)));
+
+    try {
+      await sendInquiryEmail(details);
       setContactSuccess(true);
       setContactName("");
       setContactEmail("");
       setContactPhone("");
       setContactMessage("");
       setContactSelectedSolutions([]);
+    } catch (err) {
+      // The typed-in details are deliberately left in the form so nothing is
+      // lost and the visitor can retry or switch to WhatsApp.
+      console.error("Inquiry email failed", err);
+      setContactError(
+        "We couldn't send your request just now. Please try again, or reach us on WhatsApp below."
+      );
+    } finally {
       setIsContactSubmitting(false);
-    }, 700);
+    }
   };
 
   const toggleContactSolution = (solution) => {
@@ -568,6 +602,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials — minimal card slider */}
+      {SHOW_TESTIMONIALS && (
       <section className="py-24 md:py-32 bg-[#F9FAFB] border-t border-b border-gray-200">
         <motion.div
           initial="hidden"
@@ -612,6 +647,7 @@ export default function Home() {
           ))}
         </motion.div>
       </section>
+      )}
 
       {/* Contact Request Form */}
       <section id="contact" data-testid="contact-section" className="py-24 md:py-32 bg-[#F9FAFB] border-t border-gray-200">
@@ -710,8 +746,20 @@ export default function Home() {
                   Thank You — Request Received
                 </h3>
                 <p className="text-sm text-gray-500 font-light max-w-md mx-auto leading-relaxed">
-                  Your consultation request has been captured. Our water analyst will reach out to you shortly.
+                  Your request has been emailed to our team. Our water analyst will reach out to you shortly.
                 </p>
+                {lastWhatsAppHref && (
+                  <a
+                    href={lastWhatsAppHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-testid="contact-whatsapp-fallback"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#25D366] hover:underline"
+                  >
+                    <WhatsAppIcon className="w-4 h-4" />
+                    Send it on WhatsApp too
+                  </a>
+                )}
                 <button
                   onClick={() => setContactSuccess(false)}
                   data-testid="contact-reset-button"
@@ -813,6 +861,27 @@ export default function Home() {
                     className="w-full bg-transparent border-b border-gray-200 hover:border-gray-400 focus:border-[#3BA7FF] pb-2 text-sm focus:outline-none transition-colors resize-none"
                   ></textarea>
                 </div>
+
+                {contactError && (
+                  <div
+                    data-testid="contact-error"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-red-50 border border-red-100 rounded-xl px-4 py-3"
+                  >
+                    <p className="text-sm text-red-600 font-light">{contactError}</p>
+                    {lastWhatsAppHref && (
+                      <a
+                        href={lastWhatsAppHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-testid="contact-error-whatsapp"
+                        className="shrink-0 inline-flex items-center gap-2 text-sm font-semibold text-[#25D366] hover:underline"
+                      >
+                        <WhatsAppIcon className="w-4 h-4" />
+                        Send on WhatsApp
+                      </a>
+                    )}
+                  </div>
+                )}
 
                 <div className="flex justify-end">
                   <button

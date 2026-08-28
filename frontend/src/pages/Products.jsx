@@ -9,6 +9,11 @@ const fadeUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } }
 };
 
+/* Gap between one section photo advancing and the next one advancing — same
+   staggered rotation the Home page product tiles use. With 4 sections in the
+   rotation each one changes every TILE_ROTATE_MS x 4. */
+const TILE_ROTATE_MS = 2200;
+
 /* Full-page detail view (replaces the gallery grid) — image gallery + brief description + info. */
 function SystemDetailView({ sys, onBack }) {
   const [index, setIndex] = useState(0);
@@ -175,10 +180,18 @@ function SystemDetailView({ sys, onBack }) {
             </div>
           )}
 
+          {/* Jumps to the Home contact form and leaves the system name behind so the
+              message field arrives prefilled (picked up in Home's pendingInquiry effect). */}
           <Link
             to="/#contact"
             data-testid={`system-enquire-${sys.id}`}
             className="btn-primary"
+            onClick={() =>
+              sessionStorage.setItem(
+                "pendingInquiry",
+                `I'd like to enquire about the ${sys.title} system.`
+              )
+            }
           >
             Enquire About This System
             <ArrowRight className="w-3.5 h-3.5" />
@@ -200,6 +213,34 @@ export default function Products() {
   // When switching to a detail view, start at the top of the page
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
+  }, [activeId]);
+
+  /* Section photos cycle through their own folder gallery, one section at a
+     time: section 1 changes, then section 2, and back around. Sections with a
+     single photo are skipped so they never sit idle in the rotation. */
+  const [tileFrames, setTileFrames] = useState(() => systemTypes.map(() => 0));
+
+  useEffect(() => {
+    if (activeId) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const rotatable = systemTypes
+      .map((sys, i) => ((sys.gallery?.length || 0) > 1 ? i : -1))
+      .filter((i) => i !== -1);
+    if (!rotatable.length) return;
+
+    let turn = 0;
+    const id = setInterval(() => {
+      const tile = rotatable[turn % rotatable.length];
+      turn += 1;
+      setTileFrames((prev) => {
+        const next = [...prev];
+        next[tile] = (next[tile] + 1) % systemTypes[tile].gallery.length;
+        return next;
+      });
+    }, TILE_ROTATE_MS);
+
+    return () => clearInterval(id);
   }, [activeId]);
 
   return (
@@ -251,11 +292,16 @@ export default function Products() {
                       }`}
                     >
                       <div className="aspect-[4/3] sm:aspect-[16/10]">
-                        <img
-                          src={sys.image}
-                          alt=""
-                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                        />
+                        {(sys.gallery?.length ? sys.gallery : [sys.image]).map((src, frame) => (
+                          <img
+                            key={frame}
+                            src={src}
+                            alt=""
+                            className={`absolute inset-0 w-full h-full object-cover transition-[opacity,transform] duration-700 ease-out group-hover:scale-[1.04] ${
+                              frame === tileFrames[index] ? "opacity-100" : "opacity-0"
+                            }`}
+                          />
+                        ))}
                       </div>
                       <span className="absolute top-5 left-5 inline-flex items-center rounded-full bg-white/85 backdrop-blur-md border border-white/60 px-3 py-1.5 text-[11px] font-mono uppercase tracking-widest text-[#0B0B0B]">
                         {sys.badge}

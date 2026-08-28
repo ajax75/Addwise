@@ -2,8 +2,8 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://ajax75.github.io/Addwise",
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@react-three/fiber": "^9.6.1",
     "framer-motion": "11.18.0",
     "lenis": "1.3.25",

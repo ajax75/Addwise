@@ -33,9 +33,17 @@ jobs:
       - run: npm ci
 
       # CI=false so CRA build warnings don't fail the build.
+      # PUBLIC_URL sets the /Addwise sub-path Pages serves from. It lives here
+      # rather than in package.json "homepage" so the same source also builds
+      # for a domain root (Vercel), where PUBLIC_URL is left unset.
       - run: npm run build
         env:
           CI: false
+          PUBLIC_URL: /Addwise
+          REACT_APP_EMAILJS_SERVICE_ID: ${{ secrets.REACT_APP_EMAILJS_SERVICE_ID }}
+          REACT_APP_EMAILJS_TEMPLATE_ID: ${{ secrets.REACT_APP_EMAILJS_TEMPLATE_ID }}
+          REACT_APP_EMAILJS_PUBLIC_KEY: ${{ secrets.REACT_APP_EMAILJS_PUBLIC_KEY }}
+          REACT_APP_EMAILJS_TO_EMAIL: ${{ secrets.REACT_APP_EMAILJS_TO_EMAIL }}
 
       - uses: actions/configure-pages@v5
 

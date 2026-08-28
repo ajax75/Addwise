@@ -83,6 +83,8 @@ android-sdk/
 .env
 .env.*
 *.env
+# Committed placeholder listing the vars each deploy target must set
+!.env.example
 credentials.json
 *.key
 .credentials
