@@ -27,6 +27,19 @@ export const sendInquiryEmail = ({ name, phone, email, property, solutions, mess
     return Promise.reject(new Error("EmailJS is not configured — see frontend/.env"));
   }
 
+  /* Digits-only copy of the number, normalised for tel: and wa.me. A leading 0
+     (STD prefix) is dropped and a bare 10-digit entry gets the India country
+     code, which is what visitors here type; wa.me rejects both raw forms. */
+  const digits = String(phone || "").replace(/\D/g, "").replace(/^0+/, "");
+  const phoneLink = digits.length === 10 ? `91${digits}` : digits;
+
+  /* Whole URLs are built here rather than stitched together inside the email
+     template. An href assembled as "tel:{{phone_link}}" silently becomes a dead
+     link if the variable is ever missing or the template drifts out of sync;
+     a complete-URL variable either works or is visibly empty. */
+  const callHref = phoneLink ? `tel:+${phoneLink}` : "";
+  const whatsappHref = phoneLink ? `https://wa.me/${phoneLink}` : "";
+
   return emailjs.send(
     EMAILJS.serviceId,
     EMAILJS.templateId,
@@ -39,7 +52,12 @@ export const sendInquiryEmail = ({ name, phone, email, property, solutions, mess
       message: message || "No additional details",
       // Lets the office hit reply and land in the visitor's inbox
       reply_to: email || "",
-      to_email: EMAILJS.toEmail || ""
+      to_email: EMAILJS.toEmail || "",
+      // phone_link is kept for older copies of the template that build their
+      // own hrefs; call_href / whatsapp_href are what the current one uses.
+      phone_link: phoneLink,
+      call_href: callHref,
+      whatsapp_href: whatsappHref
     },
     { publicKey: EMAILJS.publicKey }
   );
